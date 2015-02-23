@@ -8,6 +8,12 @@ If you want to install from source, then `python setup.py install`.
 
 ## Requirements
 
+This wrapper could be written using only the standard library. For easy of development, I've opted for a few useful packages.
+
+- [Py](http://pylib.readthedocs.org/en/latest/)
+- [Pytest](http://pytest.org/latest/)
+- [Requests](http://docs.python-requests.org/en/latest/)
+
 ## Documentation
 
 The [official Socrata API docs](http://dev.socrata.com/) provide thorough documentation of the available methods, as well as other client libraries. A quick list of eligible domains to use with the API is available [here](https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija).
