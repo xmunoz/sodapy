@@ -72,6 +72,6 @@ Wrap up when you're finished.
 
 	>>> client.close()
 
-## TODO and known issues.
+## TODO and known issues
 - Currently, the client does not support dataset creation.
 - Tests are lacking.
