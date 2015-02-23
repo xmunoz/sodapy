@@ -8,12 +8,19 @@ execfile('sodapy/version.py')
 with open('requirements.txt') as requirements:
     required = requirements.read().splitlines()
 
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
+
+
 kwargs = {
     "name": "sodapy",
     "version": str(__version__),
     "packages": ["sodapy"],
     "description": "Python bindings for the Socrata Open Data API",
-    "long_description": open("README.md").read(),
+    "long_description": long_description,
     "author": "Cristina Munoz",
     "maintainer": "Cristina Munoz",
     "author_email": "hi@xmunoz.com",
