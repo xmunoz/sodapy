@@ -20,7 +20,7 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 
 ## Examples
 
-Retrieving data is easy! Use SQL-style keyword args to filter data, or lookup an individual row by simply appending the row idenifier to the resource endpoint for that dataset.
+Retrieving data is easy! Use SQL-style keyword args to filter data, or lookup an individual row by simply appending the row identifier to the resource endpoint for that dataset.
 
     >>> from sodapy import Socrata
     >>> client = Socrata("sandbox.demo.socrata.com", "FakeAppToken", username="fakeuser@somedomain.com", password="ndKS92mS01msjJKs")
@@ -30,6 +30,7 @@ Retrieving data is easy! Use SQL-style keyword args to filter data, or lookup an
 
 	>>> client.get("/resource/nimj-3ivp.json", where="depth > 300", order="magnitude DESC", exclude_system_fields=False)
 	[{u'geolocation': {u'latitude': u'-15.563', u'needs_recoding': False, u'longitude': u'-175.6104'}, u'version': u'9', u':updated_at': 1348778988, u'number_of_stations': u'275', u'region': u'Tonga', u':created_meta': u'21484', u'occurred_at': u'2012-09-13T21:16:43', u':id': 132, u'source': u'us', u'depth': u'328.30', u'magnitude': u'4.8', u':meta': u'{\n}', u':updated_meta': u'21484', u'earthquake_id': u'c000cnb5', u':created_at': 1348778988}, {u'geolocation': {u'latitude': u'-23.5123', u'needs_recoding': False, u'longitude': u'-179.1089'}, u'version': u'3', u':updated_at': 1348778988, u'number_of_stations': u'93', u'region': u'south of the Fiji Islands', u':created_meta': u'21484', u'occurred_at': u'2012-09-14T16:14:58', u':id': 32, u'source': u'us', u'depth': u'387.00', u'magnitude': u'4.6', u':meta': u'{\n}', u':updated_meta': u'21484', u'earthquake_id': u'c000cp1z', u':created_at': 1348778988}, {u'geolocation': {u'latitude': u'21.6711', u'needs_recoding': False, u'longitude': u'142.9236'}, u'version': u'C', u':updated_at': 1348778988, u'number_of_stations': u'136', u'region': u'Mariana Islands region', u':created_meta': u'21484', u'occurred_at': u'2012-09-13T11:19:07', u':id': 193, u'source': u'us', u'depth': u'300.70', u'magnitude': u'4.4', u':meta': u'{\n}', u':updated_meta': u'21484', u'earthquake_id': u'c000cmsq', u':created_at': 1348778988}]
+
     >>> client.get("/resource/nimj-3ivp/193.json", exclude_system_fields=False)
     {u'geolocation': {u'latitude': u'21.6711', u'needs_recoding': False, u'longitude': u'142.9236'}, u'version': u'C', u':updated_at': 1348778988, u'number_of_stations': u'136', u'region': u'Mariana Islands region', u':created_meta': u'21484', u'occurred_at': u'2012-09-13T11:19:07', u':id': 193, u'source': u'us', u'depth': u'300.70', u'magnitude': u'4.4', u':meta': u'{\n}', u':updated_meta': u'21484', u':position': 193, u'earthquake_id': u'c000cmsq', u':created_at': 1348778988}	
 
@@ -45,7 +46,7 @@ Update/Delete rows in a dataset.
 	>>> client.upsert("/resource/eb9n-hr43.json", data)
 	{u'Errors': 0, u'Rows Deleted': 1, u'Rows Updated': 1, u'By SID': 2, u'Rows Created': 0, u'By RowIdentifier': 0}
 
-Upserts can even be preformed with a csv file.
+Upserts can even be performed with a csv file.
 
 	>>> data = open("upsert_test.csv")
 	>>> client.update("/resource/eb9n-hr43.json", data)
@@ -70,3 +71,7 @@ Delete the entire dataset.
 Wrap up when you're finished.
 
 	>>> client.close()
+
+## TODO and known issues.
+- Currently, the client does not support dataset creation.
+- Tests are lacking.
