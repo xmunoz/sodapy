@@ -8,7 +8,7 @@ If you want to install from source, then `python setup.py install`.
 
 ## Requirements
 
-This wrapper could be written using only the standard library. For easy of development, I've opted for a few useful packages.
+This wrapper could be written using only the standard library. For ease of development, I've opted for a few useful packages.
 
 - [Py](http://pylib.readthedocs.org/en/latest/)
 - [Pytest](http://pytest.org/latest/)
