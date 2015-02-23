@@ -49,7 +49,7 @@ Update/Delete rows in a dataset.
 Upserts can even be performed with a csv file.
 
 	>>> data = open("upsert_test.csv")
-	>>> client.update("/resource/eb9n-hr43.json", data)
+	>>> client.upsert("/resource/eb9n-hr43.json", data)
 	{u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 1, u'By SID': 1, u'Rows Created': 0, u'By RowIdentifier': 0}
 
 The same is true for full replace.
