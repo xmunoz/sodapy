@@ -11,9 +11,9 @@ with open('requirements.txt') as requirements:
 kwargs = {
     "name": "sodapy",
     "version": str(__version__),
-    "packages": ["sodapy"]
+    "packages": ["sodapy"],
     "description": "Python bindings for the Socrata Open Data API",
-    "long_description": open("README").read(),
+    "long_description": open("README.md").read(),
     "author": "Cristina Munoz",
     "maintainer": "Cristina Munoz",
     "author_email": "hi@xmunoz.com",
