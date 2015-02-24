@@ -3,9 +3,9 @@
 import setuptools
 from distutils.core import setup
 
-execfile('sodapy/version.py')
+execfile("sodapy/version.py")
 
-with open('requirements.txt') as requirements:
+with open("requirements.txt") as requirements:
     required = requirements.read().splitlines()
 
 try:
