@@ -1,4 +1,4 @@
-[![Latest Version](https://pypip.in/version/sodapy/badge.svg?style=flat)](https://pypi.python.org/pypi/sodapy/)
+[![Latest Version](https://pypip.in/version/sodapy/badge.svg?style=flat)](https://pypi.python.org/pypi/sodapy/)[![Build Status](https://travis-ci.org/xmunoz/sodapy.svg?branch=master)](https://travis-ci.org/xmunoz/sodapy)
 # sodapy
 Python bindings for the Socrata Open Data API
 
