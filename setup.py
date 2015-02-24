@@ -5,9 +5,6 @@ from distutils.core import setup
 
 execfile("sodapy/version.py")
 
-with open("requirements.txt") as requirements:
-    required = requirements.read().splitlines()
-
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
@@ -26,7 +23,7 @@ kwargs = {
     "author_email": "hi@xmunoz.com",
     "maintainer_email": "hi@xmunoz.com",
     "license": "Apache",
-    "install_requires": required,
+    "install_requires": ["py", "pytest", "requests"],
     "url": "https://github.com/xmunoz/sodapy",
     "download_url": "https://github.com/xmunoz/sodapy/archive/master.tar.gz",
 	"keywords": "soda socrata opendata api",
