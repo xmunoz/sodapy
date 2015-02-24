@@ -24,7 +24,7 @@ kwargs = {
     "install_requires": ["py", "pytest", "requests"],
     "url": "https://github.com/xmunoz/sodapy",
     "download_url": "https://github.com/xmunoz/sodapy/archive/master.tar.gz",
-	"keywords": "soda socrata opendata api",
+    "keywords": "soda socrata opendata api",
     "classifiers": [
         "Programming Language :: Python",
         "Topic :: Software Development",
@@ -34,4 +34,3 @@ kwargs = {
 }
 
 setup(**kwargs)
-
