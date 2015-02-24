@@ -1,3 +1,5 @@
+[![Latest Version](https://pypip.in/version/sodapy/badge.svg)](https://pypi.python.org/pypi/sodapy/)
+
 # sodapy
 Python bindings for the Socrata Open Data API
 
