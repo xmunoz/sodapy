@@ -174,11 +174,6 @@ class Socrata(object):
 
         return self._perform_request("delete", delete_uri)
 
-    @property
-    def response_formats(self):
-        return set(["application/json; charset=utf-8",
-                    "text/csv; charset=utf-8", "application/rdf+xml"])
-
     def _perform_request(self, request_type, resource, **kwargs):
         '''
         Utility method that performs all requests.
