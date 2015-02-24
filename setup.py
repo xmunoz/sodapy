@@ -1,15 +1,13 @@
 #!/usr/bin/env python
 
-import setuptools
-from distutils.core import setup
-
+from setuptools import setup
 execfile("sodapy/version.py")
 
 try:
     import pypandoc
     long_description = pypandoc.convert('README.md', 'rst')
 except(IOError, ImportError):
-    long_description = open('README.md').read()
+    long_description = open('README').read()
 
 
 kwargs = {
