@@ -192,9 +192,7 @@ class Socrata(object):
 
         # handle errors
         if response.status_code not in (200, 202):
-            # TODO: handle this better
-            print response.json()
-            response.raise_for_status()
+            _raise_for_status(response)
 
         # deletes have no content body, simple return the whole response
         if request_type == "delete":
@@ -214,6 +212,31 @@ class Socrata(object):
 
     def close(self):
         self.session.close()
+
+
+# helper methods
+def _raise_for_status(response):
+    '''
+    Custom raise_for_status with more appropriate error message.
+    '''
+    http_error_msg = ""
+
+    if 400 <= response.status_code < 500:
+        http_error_msg = "{} Client Error: {}".format(response.status_code,
+                                                      response.reason)
+
+    elif 500 <= response.status_code < 600:
+        http_error_msg = "{} Server Error: {}".format(response.status_code,
+                                                      response.reason)
+
+    if http_error_msg:
+        try:
+            more_info = response.json().get("message")
+        except ValueError:
+            more_info = None
+        if more_info and more_info.lower() != response.reason.lower():
+            http_error_msg += ".\n\t{}".format(more_info)
+        raise requests.exceptions.HTTPError(http_error_msg, response=response)
 
 
 def _clear_empty_values(args):
