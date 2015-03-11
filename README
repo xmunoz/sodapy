@@ -10,11 +10,12 @@ If you want to install from source, then `python setup.py install`.
 
 Requirements
 ~~~~~~~~~~~~
-This wrapper could be written using only the standard library. For ease of development, I've opted for a few useful packages.
 
 - [Py](http://pylib.readthedocs.org/en/latest/)
 - [Pytest](http://pytest.org/latest/)
 - [Requests](http://docs.python-requests.org/en/latest/)
+- [Requests Mock](http://requests-mock.readthedocs.org/en/latest/)
+- [Six](http://six.readthedocs.org/en/latest/)
 
 Documentation
 ~~~~~~~~~~~~~
@@ -74,7 +75,9 @@ Wrap up when you're finished.
 
 	>>> client.close()
 
-TODO and known issues
-~~~~~~~~~~~~~~~~~~~~~
-- Currently, the client does not support dataset creation.
-- Tests are lacking.
+## Run tests
+
+    $ ./runtests tests/
+
+## TODO and known issues
+- Currently, the client does not support dataset creation. A new import API is under construction, and being tracked [here](https://github.com/socrata/soda-ruby/issues/13).
