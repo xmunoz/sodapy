@@ -113,7 +113,7 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{}://{}{}".format(PREFIX, DOMAIN, PATH)
+    uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, PATH)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(PATH)
     assert response.status_code == 200
