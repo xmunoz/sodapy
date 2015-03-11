@@ -131,7 +131,7 @@ def set_up_mock(adapter, method, response, response_code,
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
         body = json.load(f)
-    uri = "{}://{}{}".format(PREFIX, DOMAIN, PATH)
+    uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, PATH)
     headers = {
         "content-type": "application/json; charset=utf-8"
     }
