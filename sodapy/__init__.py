@@ -42,8 +42,8 @@ class Socrata(object):
         # set up the session with proper authentication crendentials
         self.session = requests.Session()
         if not app_token:
-            print ("Warning: requests made without an app_token will be subject"
-            " to strict throttling limits.")
+            print ("Warning: requests made without an app_token will be"
+                   " subject to strict throttling limits.")
         else:
             self.session.headers.update({"X-App-token": app_token})
 
@@ -118,8 +118,8 @@ class Socrata(object):
 
         if params.get("$limit") and params["$limit"] > MAX_LIMIT:
             raise Exception("Max limit exceeded! {0} is greater than the"
-                            " Socrata API limit of {1}. More information on the"
-                            " official API docs:"
+                            " Socrata API limit of {1}. More information on"
+                            " the official API docs:"
                             " http://dev.socrata.com/docs/paging.html"
                             .format(params["$limit"], MAX_LIMIT))
 
@@ -154,8 +154,8 @@ class Socrata(object):
             response = self._perform_request(method, resource, data=payload,
                                              headers=headers)
         else:
-            raise Exception("Unrecognized payload {0}. Currently only lists and"
-                            " files are supported.".format(type(payload)))
+            raise Exception("Unrecognized payload {0}. Currently only lists"
+                            " and files are supported.".format(type(payload)))
 
         return response
 
@@ -180,8 +180,8 @@ class Socrata(object):
         '''
         request_type_methods = set(["get", "post", "put", "delete"])
         if request_type not in request_type_methods:
-            raise Exception("Unknown request type. Supported request types"
-                            " are: {0}".format(", ".join(request_type_methods)))
+            raise Exception("Unknown request type. Supported request types are"
+                            ": {0}".format(", ".join(request_type_methods)))
 
         uri = "{0}://{1}{2}".format(self.uri_prefix, self.domain, resource)
 
@@ -208,7 +208,8 @@ class Socrata(object):
         elif content_type == "application/rdf+xml; charset=utf-8":
             return response.content
         else:
-            raise Exception("Unknown response format: {0}".format(content_type))
+            raise Exception("Unknown response format: {0}"
+                            .format(content_type))
 
     def close(self):
         self.session.close()
@@ -227,7 +228,7 @@ def _raise_for_status(response):
 
     elif 500 <= response.status_code < 600:
         http_error_msg = "{0} Server Error: {1}".format(response.status_code,
-                                                      response.reason)
+                                                        response.reason)
 
     if http_error_msg:
         try:
