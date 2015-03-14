@@ -42,8 +42,8 @@ class Socrata(object):
         # set up the session with proper authentication crendentials
         self.session = requests.Session()
         if not app_token:
-            print "Warning: requests made without an app_token will be subject"
-            " to strict throttling limits."
+            print ("Warning: requests made without an app_token will be subject"
+            " to strict throttling limits.")
         else:
             self.session.headers.update({"X-App-token": app_token})
 
