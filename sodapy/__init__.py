@@ -194,7 +194,7 @@ class Socrata(object):
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
-        # deletes have no content body, simple return the whole response
+        # deletes have no content body, simply return the whole response
         if request_type == "delete":
             return response
 
