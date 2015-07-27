@@ -1,8 +1,15 @@
-from constants import MAX_LIMIT
-from version import __version__, version_info
+# Provide Python 2/3 compatability 
+from __future__ import print_function
+from __future__ import absolute_import
+from future import standard_library
+standard_library.install_aliases()
+from builtins import object
+
+from .constants import MAX_LIMIT
+from .version import __version__, version_info
 
 import requests
-from cStringIO import StringIO
+from io import StringIO
 import csv
 import json
 
