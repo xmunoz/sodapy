@@ -129,7 +129,7 @@ def test_delete():
 def set_up_mock(adapter, method, response, response_code,
                 reason="OK", auth=None):
     path = os.path.join(TEST_DATA_PATH, response)
-    with open(path, "rb") as f:
+    with open(path, "r") as f:
         body = json.load(f)
     uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, PATH)
     headers = {
