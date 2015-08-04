@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-# Provides Python 2/3 compatability 
-from past.builtins import execfile
-from builtins import str
-
 from setuptools import setup
 execfile("sodapy/version.py")
 

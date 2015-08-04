@@ -55,7 +55,7 @@ def test_upsert_exception():
              "title": "King of the Beach", "year": "2010"}]
     try:
         response = client.upsert(PATH, data)
-    except Exception as e:
+    except Exception, e:
         assert isinstance(e, requests.exceptions.HTTPError)
     else:
         raise AssertionError("No exception raised for bad request.")
@@ -120,7 +120,7 @@ def test_delete():
 
     try:
         client.delete("/foobar.json")
-    except Exception as e:
+    except Exception, e:
         assert isinstance(e, requests_mock.exceptions.NoMockAddress)
     finally:
         client.close()
@@ -129,7 +129,7 @@ def test_delete():
 def set_up_mock(adapter, method, response, response_code,
                 reason="OK", auth=None):
     path = os.path.join(TEST_DATA_PATH, response)
-    with open(path, "r") as f:
+    with open(path, "rb") as f:
         body = json.load(f)
     uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, PATH)
     headers = {
