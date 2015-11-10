@@ -201,12 +201,12 @@ class Socrata(object):
 
         # for other request types, return most useful data
         content_type = response.headers.get('content-type').strip().lower()
-        if re.match(r'application/json;\s*charset=utf-8', content_type):
+        if re.match(r'application\/json;\s*charset=utf-8', content_type):
             return response.json()
-        elif re.match(r'text/csv;\s*charset=utf-8', content_type):
+        elif re.match(r'text\/csv;\s*charset=utf-8', content_type):
             csv_stream = StringIO(response.text)
             return [line for line in csv.reader(csv_stream)]
-        elif re.match(r'application/rdf+xml;\s*charset=utf-8', content_type):
+        elif re.match(r'application\/rdf\+xml;\s*charset=utf-8', content_type):
             return response.content
         else:
             raise Exception("Unknown response format: {0}"
