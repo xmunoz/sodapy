@@ -80,6 +80,7 @@ class Socrata(object):
         '''
         Create a dataset, including the field types. Optionally, specify args:
             description : description of the dataset
+            columns : list of columns (see docs/tests for list structure)
             category : must exist in /admin/metadata
             row_identifier : field name of primary key
             public : whether or not the dataset should be publicly accessible
@@ -91,7 +92,8 @@ class Socrata(object):
         payload = {
             "name": name,
             "description": kwargs.pop("description", None),
-            "category": kwargs.pop("category", None)
+            "category": kwargs.pop("category", None),
+            "columns": kwargs.pop("columns", None)
         }
         if("row_identifier" in kwargs):
             payload.metadata = {
