@@ -76,8 +76,51 @@ class Socrata(object):
                             " OAuth2.0. Please use only one authentication"
                             " method.")
 
-    def create(self, file_object):
-        raise NotImplementedError()
+    def create(self, name, **kwargs):
+        '''
+        Create a dataset, including the field types. Optionally, specify args:
+            description : description of the dataset
+            category : must exist in /admin/metadata
+            row_identifier : field name of primary key
+            public : whether or not the dataset should be publicly accessible
+            published : whether to keep the dataset in the "staging" phase or publish
+        '''
+        public = kwargs.pop("public", False)
+        published = kwargs.pop("published", False)
+        
+        payload = {
+            "name": name,
+            "description": kwargs.pop("description", None),
+            "category": kwargs.pop("category", None)
+        }
+        if("row_identifier" in kwargs):
+            payload.metadata = {
+                "rowIdentifier": kwargs.pop("row_identifier", None)
+            }
+        
+        payload.update(kwargs)
+        payload = _clear_empty_values(payload)
+        
+        return self._perform_update("post", "/api/views.json", payload)
+    
+    def set_public(self, resource):
+        '''
+        After creating a dataset, use this method to make it public
+        '''
+        params = {
+            'method': 'setPermission',
+            'value': 'public.read'
+        }
+        resource = resource.rsplit("/", 1)[-1] # just get the dataset id
+        
+        return self._perform_request("put", "/api/views/" + resource, params=params)
+    
+    def publish(self, resource):
+        '''
+        After creating a dataset, use this method to publish it
+        '''
+        resource = resource.split("/", 1)[-1].split(".")[0] # just get the dataset id
+        return self._perform_request("post", "/api/views/" + resource + "/publication.json")
 
     def get(self, resource, **kwargs):
         '''
@@ -145,7 +188,7 @@ class Socrata(object):
         return self._perform_update("put", resource, payload)
 
     def _perform_update(self, method, resource, payload):
-        if isinstance(payload, list):
+        if isinstance(payload, list) or isinstance(payload, dict):
             response = self._perform_request(method, resource,
                                              data=json.dumps(payload))
         elif isinstance(payload, file):
@@ -195,8 +238,9 @@ class Socrata(object):
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
-        # deletes have no content body, simply return the whole response
-        if request_type == "delete":
+        # when responses have no content body (ie. delete, set_public), simply 
+        # return the whole response
+        if not len(response.text):
             return response
 
         # for other request types, return most useful data
