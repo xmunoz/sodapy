@@ -95,8 +95,9 @@ class Socrata(object):
             "category": kwargs.pop("category", None),
             "columns": kwargs.pop("columns", None)
         }
+        
         if("row_identifier" in kwargs):
-            payload.metadata = {
+            payload["metadata"] = {
                 "rowIdentifier": kwargs.pop("row_identifier", None)
             }
         
@@ -110,8 +111,8 @@ class Socrata(object):
         After creating a dataset, use this method to make it public
         '''
         params = {
-            'method': 'setPermission',
-            'value': 'public.read'
+            "method": "setPermission",
+            "value": "public.read"
         }
         resource = resource.rsplit("/", 1)[-1] # just get the dataset id
         
