@@ -7,7 +7,7 @@ import inspect
 import json
 
 
-PREFIX = "mock"
+PREFIX = "http://"
 DOMAIN = "fakedomain.com"
 PATH = "/songs.json"
 APPTOKEN = "FakeAppToken"
@@ -113,7 +113,7 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, PATH)
+    uri = "{0}{1}{2}".format(PREFIX, DOMAIN, PATH)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(PATH)
     assert response.status_code == 200
@@ -159,12 +159,36 @@ def test_create():
     assert len(response.get("id")) == 9
     client.close()
 
+def test_set_public():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
+                     session_adapter=mock_adapter)
+
+    response_data = "empty.txt"
+    resource = "/api/views" + PATH
+    set_up_mock(adapter, "PUT", response_data, 200, resource=resource)
+    
+    response = client.set_public(PATH)
+    
+    request = adapter.request_history[0]
+    assert "method" in request.qs
+    assert "value" in request.qs
+    
+    assert response.status_code == 200
+
 def set_up_mock(adapter, method, response, response_code,
                 reason="OK", auth=None, resource=PATH):
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
-        body = json.load(f)
-    uri = "{0}://{1}{2}".format(PREFIX, DOMAIN, resource)
+        try:
+            body = json.load(f)
+        except ValueError:
+            body = None
+            
+    uri = "{0}{1}{2}".format(PREFIX, DOMAIN, resource)
     headers = {
         "content-type": "application/json; charset=utf-8"
     }

@@ -62,7 +62,7 @@ class Socrata(object):
                                session_adapter["adapter"])
             self.uri_prefix = session_adapter["prefix"]
         else:
-            self.uri_prefix = "https"
+            self.uri_prefix = "https://"
 
     def authentication_validation(self, username, password, access_token):
         '''
@@ -230,20 +230,20 @@ class Socrata(object):
             raise Exception("Unknown request type. Supported request types are"
                             ": {0}".format(", ".join(request_type_methods)))
 
-        uri = "{0}://{1}{2}".format(self.uri_prefix, self.domain, resource)
+        uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
 
         # set a timeout, just to be safe
         kwargs["timeout"] = 10
 
         response = getattr(self.session, request_type)(uri, **kwargs)
-
+        
         # handle errors
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
         # when responses have no content body (ie. delete, set_public), simply 
         # return the whole response
-        if not len(response.text):
+        if not response.text:
             return response
 
         # for other request types, return most useful data
