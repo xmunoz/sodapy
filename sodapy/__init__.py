@@ -118,7 +118,7 @@ class Socrata(object):
         The create() method creates a dataset in a "working copy" state. 
         This method publishes it.
         '''
-        resource = resource.split("/", 1)[-1].split(".")[0] # just get the dataset id
+        resource = resource.rsplit("/", 1)[-1].split(".")[0] # just get the dataset id
         return self._perform_request("post", "/api/views/" + resource + "/publication.json")
 
     def get(self, resource, **kwargs):

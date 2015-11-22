@@ -194,7 +194,7 @@ def test_publish():
     resource = "/api/views/songs/publication.json" # publish() removes .json
     set_up_mock(adapter, "POST", response_data, 200, resource=resource)
     
-    response = client.publish("/songs.json") # hard-coded so request uri is matched
+    response = client.publish("/resource/songs.json") # hard-coded so request uri is matched
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
     client.close()
