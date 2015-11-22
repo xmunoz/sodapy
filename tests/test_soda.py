@@ -173,7 +173,7 @@ def test_set_permission():
     set_up_mock(adapter, "PUT", response_data, 200, resource=resource)
     
     # Test response
-    response = client.set_permission(PATH, permission="public")
+    response = client.set_permission(PATH, "public")
     assert response.status_code == 200
     
     # Test request
@@ -206,7 +206,7 @@ def set_up_mock(adapter, method, response, response_code,
         try:
             body = json.load(f)
         except ValueError:
-            body = None
+            body = None # for case of empty file (test_set_permission)
             
     uri = "{0}{1}{2}".format(PREFIX, DOMAIN, resource)
     headers = {
