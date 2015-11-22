@@ -84,8 +84,6 @@ class Socrata(object):
             category : must exist in /admin/metadata
             tags : array of tag strings
             row_identifier : field name of primary key
-            public : whether to set permissions to public
-            published : whether to keep as working copy or publish
         '''
         public = kwargs.pop("public", False)
         published = kwargs.pop("published", False)
@@ -117,7 +115,8 @@ class Socrata(object):
     
     def publish(self, resource):
         '''
-        After creating a dataset, use this method to publish it
+        The create() method creates a dataset in a "working copy" state. 
+        This method publishes it.
         '''
         resource = resource.split("/", 1)[-1].split(".")[0] # just get the dataset id
         return self._perform_request("post", "/api/views/" + resource + "/publication.json")
