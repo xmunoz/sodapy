@@ -157,6 +157,7 @@ def test_create():
     # Test response
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
+    
     client.close()
 
 def test_set_public():
@@ -171,13 +172,16 @@ def test_set_public():
     resource = "/api/views" + PATH
     set_up_mock(adapter, "PUT", response_data, 200, resource=resource)
     
+    # Test response
     response = client.set_public(PATH)
+    assert response.status_code == 200
     
+    # Test request
     request = adapter.request_history[0]
     assert "method" in request.qs
     assert "value" in request.qs
     
-    assert response.status_code == 200
+    client.close()
 
 def set_up_mock(adapter, method, response, response_code,
                 reason="OK", auth=None, resource=PATH):
