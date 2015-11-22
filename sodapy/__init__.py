@@ -232,7 +232,7 @@ class Socrata(object):
         kwargs["timeout"] = 10
 
         response = getattr(self.session, request_type)(uri, **kwargs)
-        
+
         # handle errors
         if response.status_code not in (200, 202):
             _raise_for_status(response)

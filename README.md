@@ -94,6 +94,3 @@ Wrap up when you're finished.
 ## Run tests
 
     $ ./runtests tests/
-
-## TODO and known issues
-- Currently, the client does not support dataset creation. A new import API is under construction, and being tracked [here](https://github.com/socrata/soda-ruby/issues/13).
