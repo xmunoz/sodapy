@@ -141,14 +141,15 @@ def test_create():
         {"fieldName": "foo", "name": "Foo", "dataTypeName": "text"},
         {"fieldName": "bar", "name": "Bar", "dataTypeName": "number"}
     ]
+    tags = ["foo", "bar"]
     response = client.create("Foo Bar", description="test dataset", 
-                  columns=columns, row_identifier="bar")
+                  columns=columns, tags=tags, row_identifier="bar")
     
     request = adapter.request_history[0]
     request_payload = json.loads(request.text) # can't figure out how to use .json
     
     # Test request payload
-    for dataset_key in ["name", "description", "columns"]:
+    for dataset_key in ["name", "description", "columns", "tags"]:
         assert dataset_key in request_payload
 
     for column_key in ["fieldName", "name", "dataTypeName"]:

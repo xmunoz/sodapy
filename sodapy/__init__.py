@@ -78,23 +78,19 @@ class Socrata(object):
 
     def create(self, name, **kwargs):
         '''
-        Create a dataset, including the field types. Optionally, specify args:
+        Create a dataset, including the field types. Optionally, specify args such as:
             description : description of the dataset
             columns : list of columns (see docs/tests for list structure)
             category : must exist in /admin/metadata
+            tags : array of tag strings
             row_identifier : field name of primary key
-            public : whether or not the dataset should be publicly accessible
-            published : whether to keep the dataset in the "staging" phase or publish
+            public : whether to set permissions to public
+            published : whether to keep as working copy or publish
         '''
         public = kwargs.pop("public", False)
         published = kwargs.pop("published", False)
         
-        payload = {
-            "name": name,
-            "description": kwargs.pop("description", None),
-            "category": kwargs.pop("category", None),
-            "columns": kwargs.pop("columns", None)
-        }
+        payload = {"name": name}
         
         if("row_identifier" in kwargs):
             payload["metadata"] = {
