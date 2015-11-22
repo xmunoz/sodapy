@@ -7,7 +7,7 @@ import inspect
 import json
 
 
-PREFIX = "http://"
+PREFIX = "https://"
 DOMAIN = "fakedomain.com"
 PATH = "/songs.json"
 APPTOKEN = "FakeAppToken"
