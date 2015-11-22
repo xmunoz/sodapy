@@ -157,7 +157,6 @@ def test_create():
     # Test response
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
-    
     client.close()
 
 def test_set_public():
@@ -180,7 +179,23 @@ def test_set_public():
     request = adapter.request_history[0]
     assert "method" in request.qs
     assert "value" in request.qs
+    client.close()
     
+def test_publish():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
+                     session_adapter=mock_adapter)
+    
+    response_data = "create_foobar.txt"
+    resource = "/api/views/songs/publication.json" # publish() removes .json
+    set_up_mock(adapter, "POST", response_data, 200, resource=resource)
+    
+    response = client.publish("/songs.json") # hard-coded so request uri is matched
+    assert isinstance(response, dict)
+    assert len(response.get("id")) == 9
     client.close()
 
 def set_up_mock(adapter, method, response, response_code,
