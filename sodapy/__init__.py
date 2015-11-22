@@ -102,13 +102,14 @@ class Socrata(object):
         
         return self._perform_update("post", "/api/views.json", payload)
     
-    def set_public(self, resource):
+    def set_permission(self, resource, permission="private"):
         '''
-        After creating a dataset, use this method to make it public
+        Set a dataset's permissions to private or public
+        Options are private, public
         '''
         params = {
             "method": "setPermission",
-            "value": "public.read"
+            "value": "public.read" if permission == "public" else permission
         }
         resource = resource.rsplit("/", 1)[-1] # just get the dataset id
         

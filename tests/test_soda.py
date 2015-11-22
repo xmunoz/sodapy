@@ -160,7 +160,7 @@ def test_create():
     assert len(response.get("id")) == 9
     client.close()
 
-def test_set_public():
+def test_set_permission():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -173,13 +173,13 @@ def test_set_public():
     set_up_mock(adapter, "PUT", response_data, 200, resource=resource)
     
     # Test response
-    response = client.set_public(PATH)
+    response = client.set_permission(PATH, permission="public")
     assert response.status_code == 200
     
     # Test request
     request = adapter.request_history[0]
-    assert "method" in request.qs
-    assert "value" in request.qs
+    qs = request.url.split("?")[-1]
+    assert qs == "method=setPermission&value=public.read"
     client.close()
     
 def test_publish():
