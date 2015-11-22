@@ -237,8 +237,8 @@ class Socrata(object):
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
-        # when responses have no content body (ie. delete, set_public), simply 
-        # return the whole response
+        # when responses have no content body (ie. delete, set_permission), 
+        # simply return the whole response
         if not response.text:
             return response
 
