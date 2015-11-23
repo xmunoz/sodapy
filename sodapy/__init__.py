@@ -62,7 +62,7 @@ class Socrata(object):
                                session_adapter["adapter"])
             self.uri_prefix = session_adapter["prefix"]
         else:
-            self.uri_prefix = "https"
+            self.uri_prefix = "https://"
 
     def authentication_validation(self, username, password, access_token):
         '''
@@ -76,8 +76,50 @@ class Socrata(object):
                             " OAuth2.0. Please use only one authentication"
                             " method.")
 
-    def create(self, file_object):
-        raise NotImplementedError()
+    def create(self, name, **kwargs):
+        '''
+        Create a dataset, including the field types. Optionally, specify args such as:
+            description : description of the dataset
+            columns : list of columns (see docs/tests for list structure)
+            category : must exist in /admin/metadata
+            tags : array of tag strings
+            row_identifier : field name of primary key
+        '''
+        public = kwargs.pop("public", False)
+        published = kwargs.pop("published", False)
+        
+        payload = {"name": name}
+        
+        if("row_identifier" in kwargs):
+            payload["metadata"] = {
+                "rowIdentifier": kwargs.pop("row_identifier", None)
+            }
+        
+        payload.update(kwargs)
+        payload = _clear_empty_values(payload)
+        
+        return self._perform_update("post", "/api/views.json", payload)
+    
+    def set_permission(self, resource, permission="private"):
+        '''
+        Set a dataset's permissions to private or public
+        Options are private, public
+        '''
+        params = {
+            "method": "setPermission",
+            "value": "public.read" if permission == "public" else permission
+        }
+        resource = resource.rsplit("/", 1)[-1] # just get the dataset id
+        
+        return self._perform_request("put", "/api/views/" + resource, params=params)
+    
+    def publish(self, resource):
+        '''
+        The create() method creates a dataset in a "working copy" state. 
+        This method publishes it.
+        '''
+        resource = resource.rsplit("/", 1)[-1].split(".")[0] # just get the dataset id
+        return self._perform_request("post", "/api/views/" + resource + "/publication.json")
 
     def get(self, resource, **kwargs):
         '''
@@ -145,7 +187,7 @@ class Socrata(object):
         return self._perform_update("put", resource, payload)
 
     def _perform_update(self, method, resource, payload):
-        if isinstance(payload, list):
+        if isinstance(payload, list) or isinstance(payload, dict):
             response = self._perform_request(method, resource,
                                              data=json.dumps(payload))
         elif isinstance(payload, file):
@@ -184,7 +226,7 @@ class Socrata(object):
             raise Exception("Unknown request type. Supported request types are"
                             ": {0}".format(", ".join(request_type_methods)))
 
-        uri = "{0}://{1}{2}".format(self.uri_prefix, self.domain, resource)
+        uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
 
         # set a timeout, just to be safe
         kwargs["timeout"] = 10
@@ -195,8 +237,9 @@ class Socrata(object):
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
-        # deletes have no content body, simply return the whole response
-        if request_type == "delete":
+        # when responses have no content body (ie. delete, set_permission), 
+        # simply return the whole response
+        if not response.text:
             return response
 
         # for other request types, return most useful data

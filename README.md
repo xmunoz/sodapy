@@ -36,6 +36,23 @@ Retrieving data is easy! Use SQL-style keyword args to filter data, or lookup an
     >>> client.get("/resource/nimj-3ivp/193.json", exclude_system_fields=False)
     {u'geolocation': {u'latitude': u'21.6711', u'needs_recoding': False, u'longitude': u'142.9236'}, u'version': u'C', u':updated_at': 1348778988, u'number_of_stations': u'136', u'region': u'Mariana Islands region', u':created_meta': u'21484', u'occurred_at': u'2012-09-13T11:19:07', u':id': 193, u'source': u'us', u'depth': u'300.70', u'magnitude': u'4.4', u':meta': u'{\n}', u':updated_meta': u'21484', u':position': 193, u'earthquake_id': u'c000cmsq', u':created_at': 1348778988}	
 
+Create a dataset
+
+	>>> columns = [{"fieldName": "delegation", "name": "Delegation", "dataTypeName": "text"}, {"fieldName": "members", "name": "Members", "dataTypeName": "number"}]
+	>>> tags = ["politics", "geography"]
+	>>> client.create("Delegates", description="List of delegates", columns=columns, row_identifier="delegation", tags=tags, category="Transparency")
+	{u'id': u'2frc-hyvj', u'name': u'Foo Bar', u'description': u'test dataset', u'publicationStage': u'unpublished', u'columns': [ { u'name': u'Foo', u'dataTypeName': u'text', u'fieldName': u'foo', ... }, { u'name': u'Bar', u'dataTypeName': u'number', u'fieldName': u'bar', ... } ], u'metadata': { u'rowIdentifier': 230641051 }, ... }
+
+Publish a dataset after creating it (take it out of 'working copy' mode)
+
+	>>> client.publish("/resource/eb9n-hr43.json")
+	{u'id': u'2frc-hyvj', u'name': u'Foo Bar', u'description': u'test dataset', u'publicationStage': u'unpublished', u'columns': [ { u'name': u'Foo', u'dataTypeName': u'text', u'fieldName': u'foo', ... }, { u'name': u'Bar', u'dataTypeName': u'number', u'fieldName': u'bar', ... } ], u'metadata': { u'rowIdentifier': 230641051 }, ... }
+
+Set the permissions of a dataset to public or private
+
+	>>> client.set_permission("/resource/eb9n-hr43.json", "public")
+	<Response [200]>
+
 Create a new row in an existing dataset
 
     >>> data = [{'Delegation': 'AJU', 'Name': 'Alaska', 'Key': 'AL', 'Entity': 'Juneau'}]
@@ -77,6 +94,3 @@ Wrap up when you're finished.
 ## Run tests
 
     $ ./runtests tests/
-
-## TODO and known issues
-- Currently, the client does not support dataset creation. A new import API is under construction, and being tracked [here](https://github.com/socrata/soda-ruby/issues/13).
