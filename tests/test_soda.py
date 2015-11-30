@@ -220,7 +220,7 @@ def set_up_set_permissions_mock(adapter, method, response, response_code,
     with open(path, "rb") as f:
         try:
             body = json.load(f)
-            raise Exception("This should fail because file should be is empty.")
+            raise AssertionError("This should fail because file should be empty.")
         except ValueError:
             body = None
 
