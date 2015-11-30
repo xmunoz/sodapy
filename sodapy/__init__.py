@@ -1,4 +1,4 @@
-from constants import MAX_LIMIT
+from constants import MAX_LIMIT, DEFAULT_API_PREFIX
 from version import __version__, version_info
 
 import requests
@@ -84,7 +84,10 @@ class Socrata(object):
             category : must exist in /admin/metadata
             tags : array of tag strings
             row_identifier : field name of primary key
+
+        WARNING: This api endpoint might be deprecated.
         '''
+        endpoint = "/api/views.json"
         public = kwargs.pop("public", False)
         published = kwargs.pop("published", False)
         
@@ -98,28 +101,36 @@ class Socrata(object):
         payload.update(kwargs)
         payload = _clear_empty_values(payload)
         
-        return self._perform_update("post", "/api/views.json", payload)
+        return self._perform_update("post", endpoint, payload)
     
     def set_permission(self, resource, permission="private"):
         '''
         Set a dataset's permissions to private or public
         Options are private, public
+
+        WARNING: This api endpoint might be deprecated.
         '''
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
+        endpoint = "/api/views/{0}".format(resource)
         params = {
             "method": "setPermission",
             "value": "public.read" if permission == "public" else permission
         }
-        resource = resource.rsplit("/", 1)[-1] # just get the dataset id
         
-        return self._perform_request("put", "/api/views/" + resource, params=params)
+        return self._perform_request("put", endpoint, params=params)
     
     def publish(self, resource):
         '''
         The create() method creates a dataset in a "working copy" state. 
         This method publishes it.
+
+        WARNING: This api endpoint might be deprecated.
         '''
-        resource = resource.rsplit("/", 1)[-1].split(".")[0] # just get the dataset id
-        return self._perform_request("post", "/api/views/" + resource + "/publication.json")
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
+        dataset_identifier, content_type = resource.rsplit(".", 1)
+        endpoint = "/api/views/{0}/publication.{1}".format(dataset_identifier, content_type)
+
+        return self._perform_request("post", endpoint)
 
     def get(self, resource, **kwargs):
         '''
@@ -142,6 +153,8 @@ class Socrata(object):
         More information about system fields can be found here:
             http://dev.socrata.com/docs/system-fields.html
         '''
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
+        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
         headers = _clear_empty_values({"Accept": kwargs.pop("format", None)})
 
         params = {
@@ -166,7 +179,7 @@ class Socrata(object):
                             " http://dev.socrata.com/docs/paging.html"
                             .format(params["$limit"], MAX_LIMIT))
 
-        response = self._perform_request("get", resource, headers=headers,
+        response = self._perform_request("get", endpoint, headers=headers,
                                          params=params)
         return response
 
@@ -177,14 +190,20 @@ class Socrata(object):
         documentation:
             http://dev.socrata.com/publishers/upsert.html
         '''
-        return self._perform_update("post", resource, payload)
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
+        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
+
+        return self._perform_update("post", endpoint, payload)
 
     def replace(self, resource, payload):
         '''
         Same logic as upsert, but overwrites existing data with the payload
         using PUT instead of POST.
         '''
-        return self._perform_update("put", resource, payload)
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
+        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
+
+        return self._perform_update("put", endpoint, payload)
 
     def _perform_update(self, method, resource, payload):
         if isinstance(payload, list) or isinstance(payload, dict):
@@ -205,17 +224,18 @@ class Socrata(object):
     def delete(self, resource, id=None):
         '''
         Delete the entire dataset, e.g.
-            client.delete("/resource/nimj-3ivp.json")
+            client.delete("nimj-3ivp.json")
         or a single row, e.g.
-            client.delete("/resource/nimj-3ivp.json", id=4)
+            client.delete("nimj-3ivp.json", id=4)
         '''
+        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
         if id:
-            base, content_type = resource.rsplit(".", 1)
-            delete_uri = "{0}/{1}.{2}".format(base, id, content_type)
+            dataset_identifier, content_type = resource.rsplit(".", 1)
+            endpoint = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREDIX, dataset_identifier, id, content_type)
         else:
-            delete_uri = resource.replace("resource", "api/views")
+            endpoint = "/api/views/{0}".format(resource)
 
-        return self._perform_request("delete", delete_uri)
+        return self._perform_request("delete", endpoint)
 
     def _perform_request(self, request_type, resource, **kwargs):
         '''
@@ -227,7 +247,7 @@ class Socrata(object):
                             ": {0}".format(", ".join(request_type_methods)))
 
         uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
-
+        print uri
         # set a timeout, just to be safe
         kwargs["timeout"] = 10
 
