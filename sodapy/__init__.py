@@ -84,9 +84,10 @@ class Socrata(object):
             category : must exist in /admin/metadata
             tags : array of tag strings
             row_identifier : field name of primary key
+            new_backend : whether to create the dataset in the new backend
         '''
-        public = kwargs.pop("public", False)
-        published = kwargs.pop("published", False)
+        new_backend = kwargs.pop("new_backend", False)
+        resource = "/api/views.json" + ("?nbe=true" if new_backend else "")
 
         payload = {"name": name}
 
@@ -98,7 +99,7 @@ class Socrata(object):
         payload.update(kwargs)
         payload = _clear_empty_values(payload)
 
-        return self._perform_update("post", "/api/views.json", payload)
+        return self._perform_update("post", resource, payload)
 
     def set_permission(self, resource, permission="private"):
         '''
