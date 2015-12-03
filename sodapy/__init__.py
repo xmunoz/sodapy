@@ -87,19 +87,19 @@ class Socrata(object):
         '''
         public = kwargs.pop("public", False)
         published = kwargs.pop("published", False)
-        
+
         payload = {"name": name}
-        
+
         if("row_identifier" in kwargs):
             payload["metadata"] = {
                 "rowIdentifier": kwargs.pop("row_identifier", None)
             }
-        
+
         payload.update(kwargs)
         payload = _clear_empty_values(payload)
-        
+
         return self._perform_update("post", "/api/views.json", payload)
-    
+
     def set_permission(self, resource, permission="private"):
         '''
         Set a dataset's permissions to private or public
@@ -110,9 +110,9 @@ class Socrata(object):
             "value": "public.read" if permission == "public" else permission
         }
         resource = resource.rsplit("/", 1)[-1] # just get the dataset id
-        
+
         return self._perform_request("put", "/api/views/" + resource, params=params)
-    
+
     def publish(self, resource):
         '''
         The create() method creates a dataset in a "working copy" state. 
