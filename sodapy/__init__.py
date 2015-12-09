@@ -103,39 +103,36 @@ class Socrata(object):
         
         return self._perform_update("post", endpoint, payload)
     
-    def set_permission(self, resource, permission="private"):
+    def set_permission(self, dataset_identifier, permission="private", content_type="json"):
         '''
         Set a dataset's permissions to private or public
         Options are private, public
 
         WARNING: This api endpoint might be deprecated.
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
-        endpoint = "/api/views/{0}".format(resource)
+        resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
         params = {
             "method": "setPermission",
             "value": "public.read" if permission == "public" else permission
         }
         
-        return self._perform_request("put", endpoint, params=params)
+        return self._perform_request("put", resource, params=params)
     
-    def publish(self, resource):
+    def publish(self, dataset_identifier, content_type="json"):
         '''
         The create() method creates a dataset in a "working copy" state. 
         This method publishes it.
 
         WARNING: This api endpoint might be deprecated.
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
-        dataset_identifier, content_type = resource.rsplit(".", 1)
-        endpoint = "/api/views/{0}/publication.{1}".format(dataset_identifier, content_type)
+        resource = "/api/views/{0}/publication.{1}".format(dataset_identifier, content_type)
 
-        return self._perform_request("post", endpoint)
+        return self._perform_request("post", resource)
 
-    def get(self, resource, **kwargs):
+    def get(self, dataset_identifier, content_type="json", **kwargs):
         '''
-        Read data from the requested resource. Optionally, specify a keyword
-        arg to filter results:
+        Read data from the requested resource. Options for content_type are json,
+        csv, and xml. Optionally, specify a keyword arg to filter results:
             select : the set of columns to be returned, defaults to *
             where : filters the rows to be returned, defaults to limit
             order : specifies the order of results
@@ -153,8 +150,7 @@ class Socrata(object):
         More information about system fields can be found here:
             http://dev.socrata.com/docs/system-fields.html
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
-        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
+        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
         headers = _clear_empty_values({"Accept": kwargs.pop("format", None)})
 
         params = {
@@ -179,31 +175,29 @@ class Socrata(object):
                             " http://dev.socrata.com/docs/paging.html"
                             .format(params["$limit"], MAX_LIMIT))
 
-        response = self._perform_request("get", endpoint, headers=headers,
+        response = self._perform_request("get", resource, headers=headers,
                                          params=params)
         return response
 
-    def upsert(self, resource, payload):
+    def upsert(self, dataset_identifier, payload, content_type="json"):
         '''
         Insert, update or delete data to/from an existing dataset. Currently
         supports json and csv file objects. See here for the upsert
         documentation:
             http://dev.socrata.com/publishers/upsert.html
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
-        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
+        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
 
-        return self._perform_update("post", endpoint, payload)
+        return self._perform_update("post", resource, payload)
 
-    def replace(self, resource, payload):
+    def replace(self, dataset_identifier, payload, content_type="json"):
         '''
         Same logic as upsert, but overwrites existing data with the payload
         using PUT instead of POST.
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
-        endpoint = "{0}{1}".format(DEFAULT_API_PREFIX, resource)
+        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
 
-        return self._perform_update("put", endpoint, payload)
+        return self._perform_update("put", resource, payload)
 
     def _perform_update(self, method, resource, payload):
         if isinstance(payload, list) or isinstance(payload, dict):
@@ -221,21 +215,19 @@ class Socrata(object):
 
         return response
 
-    def delete(self, resource, id=None):
+    def delete(self, dataset_identifier, id=None, content_type="json"):
         '''
         Delete the entire dataset, e.g.
-            client.delete("nimj-3ivp.json")
+            client.delete("nimj-3ivp")
         or a single row, e.g.
-            client.delete("nimj-3ivp.json", id=4)
+            client.delete("nimj-3ivp", id=4)
         '''
-        resource = resource.replace("/resource/", "", 1) # for backwards compatibility
         if id:
-            dataset_identifier, content_type = resource.rsplit(".", 1)
-            endpoint = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREDIX, dataset_identifier, id, content_type)
+            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREDIX, dataset_identifier, id, content_type)
         else:
-            endpoint = "/api/views/{0}".format(resource)
+            resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
 
-        return self._perform_request("delete", endpoint)
+        return self._perform_request("delete", resource)
 
     def _perform_request(self, request_type, resource, **kwargs):
         '''
@@ -247,7 +239,7 @@ class Socrata(object):
                             ": {0}".format(", ".join(request_type_methods)))
 
         uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
-        print uri
+
         # set a timeout, just to be safe
         kwargs["timeout"] = 10
 

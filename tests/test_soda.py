@@ -10,7 +10,7 @@ import json
 
 PREFIX = "https://"
 DOMAIN = "fakedomain.com"
-PATH = "songs.json"
+PATH = "songs"
 APPTOKEN = "FakeAppToken"
 USERNAME = "fakeuser"
 PASSWORD = "fakepassword"
@@ -113,13 +113,13 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{0}{1}{2}{3}".format(PREFIX, DOMAIN, "/api/views/", PATH)
+    uri = "{0}{1}{2}{3}.json".format(PREFIX, DOMAIN, "/api/views/", PATH)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(PATH)
     assert response.status_code == 200
 
     try:
-        client.delete("foobar.json")
+        client.delete("foobar")
     except Exception, e:
         assert isinstance(e, requests_mock.exceptions.NoMockAddress)
     finally:
@@ -134,7 +134,7 @@ def test_create():
                      session_adapter=mock_adapter)
     
     response_data = "create_foobar.txt"
-    set_up_mock(adapter, "POST", response_data, 200, resource=None)
+    set_up_mock(adapter, "POST", response_data, 200, dataset_identifier=None)
     
     columns = [
         {"fieldName": "foo", "name": "Foo", "dataTypeName": "text"},
@@ -196,25 +196,25 @@ def test_publish():
     assert len(response.get("id")) == 9
     client.close()
 
-def set_up_publish_mock(adapter, method, response, response_code,
-                        reason="OK", auth=None, resource=PATH):
+def set_up_publish_mock(adapter, method, response, response_code, reason="OK", auth=None,
+                        dataset_identifier=PATH, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
         body = json.load(f)
 
-    dataset_identifier, content_type = resource.rsplit(".", 1)
-    uri = "{0}{1}{2}{3}{4}{5}".format(PREFIX, DOMAIN, "/api/views/", dataset_identifier, "/publication.", content_type)
+    uri = "{0}{1}{2}{3}{4}{5}".format(PREFIX, DOMAIN, "/api/views/", dataset_identifier,
+                                      "/publication.", content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
     }
 
-    adapter.register_uri(method, uri, status_code=response_code,
-                         json=body, reason=reason, headers=headers)
+    adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
+                         headers=headers)
 
-def set_up_set_permissions_mock(adapter, method, response, response_code,
-                                reason="OK", auth=None, resource=PATH):
+def set_up_set_permissions_mock(adapter, method, response, response_code, reason="OK", auth=None,
+                                dataset_identifier=PATH, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
@@ -224,26 +224,27 @@ def set_up_set_permissions_mock(adapter, method, response, response_code,
         except ValueError:
             body = None
 
-    uri = "{0}{1}{2}{3}".format(PREFIX, DOMAIN, "/api/views/", resource)
+    uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, "/api/views/", dataset_identifier,
+                                    content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
     }
 
-    adapter.register_uri(method, uri, status_code=response_code, json=body,
-                         reason=reason, headers=headers)
+    adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
+                         headers=headers)
 
-def set_up_mock(adapter, method, response, response_code,
-                reason="OK", auth=None, resource=PATH):
+def set_up_mock(adapter, method, response, response_code, reason="OK", auth=None,
+                dataset_identifier=PATH, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
         body = json.load(f)
 
-    if resource is None:  # for create endpoint
+    if dataset_identifier is None:  # for create endpoint
         uri = "{0}{1}{2}".format(PREFIX, DOMAIN, "/api/views.json")
     else: # mast cases
-        uri = "{0}{1}{2}{3}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, resource)
+        uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, dataset_identifier, content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
