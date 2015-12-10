@@ -10,7 +10,7 @@ import json
 
 PREFIX = "https://"
 DOMAIN = "fakedomain.com"
-PATH = "songs"
+DATASET_IDENTIFIER = "songs"
 APPTOKEN = "FakeAppToken"
 USERNAME = "fakeuser"
 PASSWORD = "fakepassword"
@@ -33,7 +33,7 @@ def test_get():
 
     response_data = "get_songs.txt"
     set_up_mock(adapter, "GET", response_data, 200)
-    response = client.get(PATH)
+    response = client.get(DATASET_IDENTIFIER)
 
     assert isinstance(response, list)
     assert len(response) == 10
@@ -54,7 +54,7 @@ def test_upsert_exception():
     data = [{"theme": "Surfing", "artist": "Wavves",
              "title": "King of the Beach", "year": "2010"}]
     try:
-        response = client.upsert(PATH, data)
+        response = client.upsert(DATASET_IDENTIFIER, data)
     except Exception, e:
         assert isinstance(e, requests.exceptions.HTTPError)
     else:
@@ -75,7 +75,7 @@ def test_upsert():
     data = [{"theme": "Surfing", "artist": "Wavves",
              "title": "King of the Beach", "year": "2010"}]
     set_up_mock(adapter, "POST", response_data, 200)
-    response = client.upsert(PATH, data)
+    response = client.upsert(DATASET_IDENTIFIER, data)
 
     assert isinstance(response, dict)
     assert response.get("Rows Created") == 1
@@ -98,7 +98,7 @@ def test_replace():
          "title": "Abe Lincoln", "year": "2008"},
     ]
     set_up_mock(adapter, "PUT", response_data, 200)
-    response = client.replace(PATH, data)
+    response = client.replace(DATASET_IDENTIFIER, data)
 
     assert isinstance(response, dict)
     assert response.get("Rows Created") == 2
@@ -113,9 +113,9 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{0}{1}{2}{3}.json".format(PREFIX, DOMAIN, "/api/views/", PATH)
+    uri = "{0}{1}{2}{3}.json".format(PREFIX, DOMAIN, "/api/views/", DATASET_IDENTIFIER)
     adapter.register_uri("DELETE", uri, status_code=200)
-    response = client.delete(PATH)
+    response = client.delete(DATASET_IDENTIFIER)
     assert response.status_code == 200
 
     try:
@@ -171,7 +171,7 @@ def test_set_permission():
     set_up_set_permissions_mock(adapter, "PUT", response_data, 200)
     
     # Test response
-    response = client.set_permission(PATH, "public")
+    response = client.set_permission(DATASET_IDENTIFIER, "public")
     assert response.status_code == 200
     
     # Test request
@@ -191,13 +191,13 @@ def test_publish():
     response_data = "create_foobar.txt"
     set_up_publish_mock(adapter, "POST", response_data, 200)
     
-    response = client.publish(PATH)
+    response = client.publish(DATASET_IDENTIFIER)
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
     client.close()
 
 def set_up_publish_mock(adapter, method, response, response_code, reason="OK", auth=None,
-                        dataset_identifier=PATH, content_type="json"):
+                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
@@ -214,7 +214,7 @@ def set_up_publish_mock(adapter, method, response, response_code, reason="OK", a
                          headers=headers)
 
 def set_up_set_permissions_mock(adapter, method, response, response_code, reason="OK", auth=None,
-                                dataset_identifier=PATH, content_type="json"):
+                                dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
@@ -235,7 +235,7 @@ def set_up_set_permissions_mock(adapter, method, response, response_code, reason
                          headers=headers)
 
 def set_up_mock(adapter, method, response, response_code, reason="OK", auth=None,
-                dataset_identifier=PATH, content_type="json"):
+                dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "rb") as f:
