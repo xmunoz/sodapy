@@ -223,7 +223,7 @@ class Socrata(object):
             client.delete("nimj-3ivp", id=4)
         '''
         if id:
-            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREDIX, dataset_identifier, id, content_type)
+            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataset_identifier, id, content_type)
         else:
             resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
 
