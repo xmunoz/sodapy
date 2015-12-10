@@ -113,7 +113,7 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{0}{1}{2}{3}.json".format(PREFIX, DOMAIN, "/api/views/", DATASET_IDENTIFIER)
+    uri = "{0}{1}/api/views/{2}.json".format(PREFIX, DOMAIN, DATASET_IDENTIFIER)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(DATASET_IDENTIFIER)
     assert response.status_code == 200
@@ -203,8 +203,8 @@ def set_up_publish_mock(adapter, method, response, response_code, reason="OK", a
     with open(path, "rb") as f:
         body = json.load(f)
 
-    uri = "{0}{1}{2}{3}{4}{5}".format(PREFIX, DOMAIN, "/api/views/", dataset_identifier,
-                                      "/publication.", content_type)
+    uri = "{0}{1}/api/views/{2}/publication.{3}".format(PREFIX, DOMAIN, dataset_identifier,
+                                                        content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
@@ -224,8 +224,7 @@ def set_up_set_permissions_mock(adapter, method, response, response_code, reason
         except ValueError:
             body = None
 
-    uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, "/api/views/", dataset_identifier,
-                                    content_type)
+    uri = "{0}{1}/api/views/{2}.{3}".format(PREFIX, DOMAIN, dataset_identifier, content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
@@ -242,9 +241,10 @@ def set_up_mock(adapter, method, response, response_code, reason="OK", auth=None
         body = json.load(f)
 
     if dataset_identifier is None:  # for create endpoint
-        uri = "{0}{1}{2}".format(PREFIX, DOMAIN, "/api/views.json")
-    else: # mast cases
-        uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, dataset_identifier, content_type)
+        uri = "{0}{1}/api/views.json".format(PREFIX, DOMAIN)
+    else: # most cases
+        uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, dataset_identifier,
+                                        content_type)
 
     headers = {
         "content-type": "application/json; charset=utf-8"
