@@ -82,12 +82,14 @@ class Socrata(object):
             description : description of the dataset
             columns : list of columns (see docs/tests for list structure)
             category : must exist in /admin/metadata
-            tags : array of tag strings
+            tags : list of tag strings
             row_identifier : field name of primary key
             new_backend : whether to create the dataset in the new backend
         '''
         new_backend = kwargs.pop("new_backend", False)
-        resource = "/api/views.json" + ("?nbe=true" if new_backend else "")
+        resource = "/api/views.json"
+        if new_backend:
+          resource += "?nbe=true"
 
         payload = {"name": name}
 
