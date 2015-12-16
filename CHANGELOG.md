@@ -6,7 +6,7 @@ sodapy changes by release
 ### Major Changes
 
 * Create, publish, and set permission methods added.
-* The resource string passed to the endpoint methods no longer require the "/resource/" prefix.
+* The resource string passed to the endpoint methods now only requires the unique dataset_identifier, instead of a URI path.
 * Flexible handling of spaces in response headers.
 
 ## 0.1.6 "Baby step"
