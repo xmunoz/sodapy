@@ -1,16 +1,22 @@
-from constants import MAX_LIMIT, DEFAULT_API_PREFIX
-from version import __version__, version_info
+from sodapy.constants import MAX_LIMIT, DEFAULT_API_PREFIX
+from sodapy.version import __version__, version_info
 
 import requests
 from cStringIO import StringIO
 import csv
 import json
 import re
+import os
 
 __author__ = "Cristina Munoz <hi@xmunoz.com>"
 
 
 class Socrata(object):
+    '''
+    The main class that interacts with the SODA API. Sample usage:
+        from sodapy import Socrata
+        client = Socrata("opendata.socrata.com", None)
+    '''
     def __init__(self, domain, app_token, username=None, password=None,
                  access_token=None, session_adapter=None, timeout=10):
         '''
@@ -48,14 +54,15 @@ class Socrata(object):
         else:
             self.session.headers.update({"X-App-token": app_token})
 
-        self.authentication_validation(username, password, access_token)
+        authentication_validation(username, password, access_token)
 
         # use either basic HTTP auth or OAuth2.0
         if username and password:
             self.session.auth = (username, password)
         elif access_token:
-            self.session.headers.update({"Authorization": "OAuth {0}"
-                                        .format(access_token)})
+            self.session.headers.update(
+                {"Authorization": "OAuth {0}".format(access_token)}
+            )
 
         if session_adapter:
             self.session.mount(session_adapter["prefix"],
@@ -64,21 +71,9 @@ class Socrata(object):
         else:
             self.uri_prefix = "https://"
 
-        if type(timeout) not in [int, long, float]:
+        if isinstance(timeout, (int, long, float)):
             raise TypeError("Timeout must be numeric.")
         self.timeout = timeout
-
-    def authentication_validation(self, username, password, access_token):
-        '''
-        Only accept one form of authentication.
-        '''
-        if bool(username) != bool(password):
-            raise Exception("Basic authentication requires a username AND"
-                            " password.")
-        if (username and access_token) or (password and access_token):
-            raise Exception("Cannot use both Basic Authentication and"
-                            " OAuth2.0. Please use only one authentication"
-                            " method.")
 
     def create(self, name, **kwargs):
         '''
@@ -95,11 +90,11 @@ class Socrata(object):
         new_backend = kwargs.pop("new_backend", False)
         resource = "/api/views.json"
         if new_backend:
-          resource += "?nbe=true"
+            resource += "?nbe=true"
 
         payload = {"name": name}
 
-        if("row_identifier" in kwargs):
+        if "row_identifier" in kwargs:
             payload["metadata"] = {
                 "rowIdentifier": kwargs.pop("row_identifier", None)
             }
@@ -124,9 +119,39 @@ class Socrata(object):
 
         return self._perform_request("put", resource, params=params)
 
+    def get_metadata(self, dataset_identifier, content_type="json"):
+        '''
+        Retrieve the metadata for a particular dataset.
+        '''
+        resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
+        return self._perform_request("get", resource)
+
+    def download_attachments(self, dataset_identifier, content_type="json",
+                             download_dir="~/sodapy_downloads"):
+        '''
+        Download all of the attachments associated with a dataset.
+        '''
+        metadata = self.get_metadata(dataset_identifier, content_type=content_type)
+        attachments = metadata['metadata']['attachments']
+        files = []
+
+        download_dir = os.path.join(os.path.expanduser(download_dir), dataset_identifier)
+        if not os.path.exists(download_dir):
+            os.makedirs(download_dir)
+
+        for attachment in attachments:
+            file_path = os.path.join(download_dir, attachment["filename"])
+            resource = "/api/views/{0}/files/{1}?download=true&filename={2}".format(
+                dataset_identifier, attachment["assetId"], attachment["filename"])
+            uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
+            _download_file(uri, file_path)
+            files.append(file_path)
+
+        return "The following files were downloaded:\n\t{0}".format("\n\t".join(files))
+
     def publish(self, dataset_identifier, content_type="json"):
         '''
-        The create() method creates a dataset in a "working copy" state. 
+        The create() method creates a dataset in a "working copy" state.
         This method publishes it.
 
         WARNING: This api endpoint might be deprecated.
@@ -208,7 +233,10 @@ class Socrata(object):
         return self._perform_update("put", resource, payload)
 
     def _perform_update(self, method, resource, payload):
-        if isinstance(payload, list) or isinstance(payload, dict):
+        '''
+        Execute the update task.
+        '''
+        if isinstance(payload, (dict, list)):
             response = self._perform_request(method, resource,
                                              data=json.dumps(payload))
         elif isinstance(payload, file):
@@ -223,15 +251,16 @@ class Socrata(object):
 
         return response
 
-    def delete(self, dataset_identifier, id=None, content_type="json"):
+    def delete(self, dataset_identifier, row_id=None, content_type="json"):
         '''
         Delete the entire dataset, e.g.
             client.delete("nimj-3ivp")
         or a single row, e.g.
             client.delete("nimj-3ivp", id=4)
         '''
-        if id:
-            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataset_identifier, id, content_type)
+        if row_id:
+            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataset_identifier, row_id,
+                                               content_type)
         else:
             resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
 
@@ -257,7 +286,7 @@ class Socrata(object):
         if response.status_code not in (200, 202):
             _raise_for_status(response)
 
-        # when responses have no content body (ie. delete, set_permission), 
+        # when responses have no content body (ie. delete, set_permission),
         # simply return the whole response
         if not response.text:
             return response
@@ -276,6 +305,9 @@ class Socrata(object):
                             .format(content_type))
 
     def close(self):
+        '''
+        Close the session.
+        '''
         self.session.close()
 
 
@@ -305,8 +337,35 @@ def _raise_for_status(response):
 
 
 def _clear_empty_values(args):
+    '''
+    Scrap junk data from a dict.
+    '''
     result = {}
     for param in args:
         if args[param] is not None:
             result[param] = args[param]
     return result
+
+def authentication_validation(username, password, access_token):
+    '''
+    Only accept one form of authentication.
+    '''
+    if bool(username) != bool(password):
+        raise Exception("Basic authentication requires a username AND"
+                        " password.")
+    if (username and access_token) or (password and access_token):
+        raise Exception("Cannot use both Basic Authentication and"
+                        " OAuth2.0. Please use only one authentication"
+                        " method.")
+
+def _download_file(url, local_filename):
+    '''
+    Utility function that downloads a chunked response from the specified url to a local path.
+    This method is suitable for larger downloads.
+    '''
+    response = requests.get(url, stream=True)
+    with open(local_filename, 'wb') as outfile:
+        for chunk in response.iter_content(chunk_size=1024):
+            if chunk: # filter out keep-alive new chunks
+                outfile.write(chunk)
+
