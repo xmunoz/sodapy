@@ -82,27 +82,29 @@ class Socrata(object):
             description : description of the dataset
             columns : list of columns (see docs/tests for list structure)
             category : must exist in /admin/metadata
-            tags : array of tag strings
+            tags : list of tag strings
             row_identifier : field name of primary key
+            new_backend : whether to create the dataset in the new backend
 
         WARNING: This api endpoint might be deprecated.
         '''
-        endpoint = "/api/views.json"
-        public = kwargs.pop("public", False)
-        published = kwargs.pop("published", False)
-        
+        new_backend = kwargs.pop("new_backend", False)
+        resource = "/api/views.json"
+        if new_backend:
+          resource += "?nbe=true"
+
         payload = {"name": name}
-        
+
         if("row_identifier" in kwargs):
             payload["metadata"] = {
                 "rowIdentifier": kwargs.pop("row_identifier", None)
             }
-        
+
         payload.update(kwargs)
         payload = _clear_empty_values(payload)
-        
-        return self._perform_update("post", endpoint, payload)
-    
+
+        return self._perform_update("post", resource, payload)
+
     def set_permission(self, dataset_identifier, permission="private", content_type="json"):
         '''
         Set a dataset's permissions to private or public
@@ -115,9 +117,9 @@ class Socrata(object):
             "method": "setPermission",
             "value": "public.read" if permission == "public" else permission
         }
-        
+
         return self._perform_request("put", resource, params=params)
-    
+
     def publish(self, dataset_identifier, content_type="json"):
         '''
         The create() method creates a dataset in a "working copy" state. 
