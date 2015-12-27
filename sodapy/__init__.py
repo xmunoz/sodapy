@@ -12,7 +12,7 @@ __author__ = "Cristina Munoz <hi@xmunoz.com>"
 
 class Socrata(object):
     def __init__(self, domain, app_token, username=None, password=None,
-                 access_token=None, session_adapter=None):
+                 access_token=None, session_adapter=None, timeout=10):
         '''
         The required arguments are:
             domain: the domain you wish you to access
@@ -63,6 +63,10 @@ class Socrata(object):
             self.uri_prefix = session_adapter["prefix"]
         else:
             self.uri_prefix = "https://"
+
+        if type(timeout) not in [int, long, float]:
+            raise TypeError("Timeout must be numeric.")
+        self.timeout = timeout
 
     def authentication_validation(self, username, password, access_token):
         '''
@@ -142,6 +146,7 @@ class Socrata(object):
             limit : max number of results to return, defaults to 1000
             offset : offset, used for paging. Defaults to 0
             q : performs a full text search for a value
+            query : full SoQL query string, all as one parameter
             exclude_system_fields : defaults to true. If set to false, the
                 response will include system fields (:id, :created_at, and
                 :updated_at)
@@ -163,6 +168,7 @@ class Socrata(object):
             "$limit": kwargs.pop("limit", None),
             "$offset": kwargs.pop("offset", None),
             "$q": kwargs.pop("q", None),
+            "$query": kwargs.pop("query", None),
             "$$exclude_system_fields": kwargs.pop("exclude_system_fields",
                                                   None)
         }
@@ -243,7 +249,7 @@ class Socrata(object):
         uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
 
         # set a timeout, just to be safe
-        kwargs["timeout"] = 10
+        kwargs["timeout"] = self.timeout
 
         response = getattr(self.session, request_type)(uri, **kwargs)
 
