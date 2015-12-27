@@ -71,7 +71,7 @@ class Socrata(object):
         else:
             self.uri_prefix = "https://"
 
-        if isinstance(timeout, (int, long, float)):
+        if not isinstance(timeout, (int, long, float)):
             raise TypeError("Timeout must be numeric.")
         self.timeout = timeout
 
