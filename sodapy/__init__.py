@@ -147,7 +147,7 @@ class Socrata(object):
             _download_file(uri, file_path)
             files.append(file_path)
 
-        return "The following files were downloaded:\n\t{0}".format("\n\t".join(files))
+        print("The following files were downloaded:\n\t{0}".format("\n\t".join(files)))
 
     def publish(self, dataset_identifier, content_type="json"):
         '''
