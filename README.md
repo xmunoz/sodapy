@@ -6,11 +6,11 @@ Python bindings for the Socrata Open Data API
 ## Installation
 You can install with `pip install sodapy`.
 
-If you want to install from source, then `python setup.py install`.
+If you want to install from source, then clone this repository and run `python setup.py install` from the project root.
 
 ## Requirements
 
-At it's core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt).
+At its core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt).
 
 ## Documentation
 
@@ -151,4 +151,4 @@ Close the seesion when you're finished.
 
 ## Contributing
 
-See [CONTRIBUTING.md]().
+See [CONTRIBUTING.md](https://github.com/xmunoz/sodapy/blob/master/CONTRIBUTING.md).
