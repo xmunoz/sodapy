@@ -1,5 +1,4 @@
 from sodapy.constants import MAX_LIMIT, DEFAULT_API_PREFIX
-from sodapy.version import __version__, version_info
 
 import requests
 from cStringIO import StringIO
@@ -185,6 +184,7 @@ class Socrata(object):
         resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
         headers = _clear_empty_values({"Accept": kwargs.pop("format", None)})
 
+        # SoQL parameters
         params = {
             "$select": kwargs.pop("select", None),
             "$where": kwargs.pop("where", None),
@@ -198,6 +198,7 @@ class Socrata(object):
                                                   None)
         }
 
+        # Additional parameters, such as field names
         params.update(kwargs)
         params = _clear_empty_values(params)
 
@@ -246,8 +247,8 @@ class Socrata(object):
             response = self._perform_request(method, resource, data=payload,
                                              headers=headers)
         else:
-            raise Exception("Unrecognized payload {0}. Currently only lists"
-                            " and files are supported.".format(type(payload)))
+            raise Exception("Unrecognized payload {0}. Currently only list-, dictionary-,"
+                            " and file-types are supported.".format(type(payload)))
 
         return response
 
