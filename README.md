@@ -10,7 +10,7 @@ If you want to install from source, then `python setup.py install`.
 
 ## Requirements
 
-At it's core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in (requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt).
+At it's core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt).
 
 ## Documentation
 
@@ -20,17 +20,17 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 
 ### Table of Contents
 
-    - [client](#client)
-    - [`get`](#get)
-    - [`get_metadata`](#get_metadata)
-    - [`download_attachments`](#download_attachments)
-    - [`create`](#create)
-    - [`publish`](#publish)
-    - [`set_permission`](#set_permission)
-    - [`upsert`](#upsert)
-    - [`replace`](#replace)
-    - [`delete`](#delete)
-    - [`close`](#close)
+- [client](#client)
+- [`get`](#get)
+- [`get_metadata`](#get_metadata)
+- [`download_attachments`](#download_attachments)
+- [`create`](#create)
+- [`publish`](#publish)
+- [`set_permission`](#set_permission)
+- [`upsert`](#upsert)
+- [`replace`](#replace)
+- [`delete`](#delete)
+- [`close`](#close)
 
 ### client
 
@@ -41,7 +41,7 @@ Import the library and set up a connection to get started.
 
 `username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be sujected to strict throttling limits.
 
-### `get`
+### get
 
 Retrieve data from the requested resources. Filter and query data by field name, id, or using [SoQL keywords](https://dev.socrata.com/docs/queries/).
 
@@ -57,14 +57,14 @@ Retrieve data from the requested resources. Filter and query data by field name,
     >>> client.get("nimj-3ivp", region="Kansas")
 	[{u'geolocation': {u'latitude': u'38.10', u'needs_recoding': False, u'longitude': u'-100.6135'}, u'version': u'9', u'source': u'nn', u'region': u'Kansas', u'occurred_at': u'2010-09-19T20:52:09', u'number_of_stations': u'15', u'depth': u'300.0', u'magnitude': u'1.9', u'earthquake_id': u'00189621'}, {...}]
 
-### `get_metadata`
+### get_metadata
 
 Retrieve the metadata associated with a particular dataset.
 
     >>> client.get_metadata("nimj-3ivp")
     {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "http://foo.bar.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
 
-### `download_attachments`
+### download_attachments
 
 Download all attachments associated with a dataset.
 
@@ -75,7 +75,7 @@ Download all attachments associated with a dataset.
 
 The default download path is `~/sodapy_downloads`.
 
-### `create`
+### create
 
 Create a new dataset.
 
@@ -84,21 +84,21 @@ Create a new dataset.
 	>>> client.create("Delegates", description="List of delegates", columns=columns, row_identifier="delegation", tags=tags, category="Transparency")
 	{u'id': u'2frc-hyvj', u'name': u'Foo Bar', u'description': u'test dataset', u'publicationStage': u'unpublished', u'columns': [ { u'name': u'Foo', u'dataTypeName': u'text', u'fieldName': u'foo', ... }, { u'name': u'Bar', u'dataTypeName': u'number', u'fieldName': u'bar', ... } ], u'metadata': { u'rowIdentifier': 230641051 }, ... }
 
-### `publish`
+### publish
 
 Publish a dataset after creating it, i.e. take it out of 'working copy' mode. The dataset id `id` returned from `create` will be used to publish.
 
 	>>> client.publish("2frc-hyvj")
 	{u'id': u'2frc-hyvj', u'name': u'Foo Bar', u'description': u'test dataset', u'publicationStage': u'unpublished', u'columns': [ { u'name': u'Foo', u'dataTypeName': u'text', u'fieldName': u'foo', ... }, { u'name': u'Bar', u'dataTypeName': u'number', u'fieldName': u'bar', ... } ], u'metadata': { u'rowIdentifier': 230641051 }, ... }
 
-### `set_permission`
+### set_permission
 
 Set the permissions of a dataset to public or private.
 
 	>>> client.set_permission("2frc-hyvj", "public")
 	<Response [200]>
 
-### `upsert`
+### upsert
 
 Create a new row in an existing dataset.
 
@@ -118,7 +118,7 @@ Update/Delete rows in a dataset.
 	>>> client.upsert("eb9n-hr43", data)
 	{u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 1, u'By SID': 1, u'Rows Created': 0, u'By RowIdentifier': 0}
 
-### `replace`
+### replace
 
 Similar in usage to `upsert`, but overwrites existing data.
 
@@ -126,7 +126,7 @@ Similar in usage to `upsert`, but overwrites existing data.
 	>>> client.replace("eb9n-hr43", data)
 	{u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 0, u'By SID': 0, u'Rows Created': 12, u'By RowIdentifier': 0}
 
-### `delete`
+### delete
 
 Delete an individual row.
 
@@ -139,7 +139,7 @@ Delete the entire dataset.
 	<Response [200]>
 
 
-### `close`
+### close
 
 Close the seesion when you're finished.
 
