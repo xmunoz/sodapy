@@ -1,8 +1,9 @@
 # Contributing
 
-This project adheres to the Open Code of Conduct. By participating, you are expected to honor this code.
+This project adheres to the [Open Code of Conduct][code-of-conduct]. By participating, you are expected to honor this code.
+[code-of-conduct]: http://todogroup.org/opencodeofconduct/#sodapy/hi@xmunoz.com
 
-## Developing
+## Getting started
 
 The best way to start developing this project is to set up a virtualenv and install the requirements.
 
@@ -12,11 +13,11 @@ The best way to start developing this project is to set up a virtualenv and inst
     source venv_sodapy/bin/activate
     pip install -r requirements.txt
 
-If everything is set up correctly, tests to should pass:
+Run tests to confirm that everything is set up properly.
 
     ./runtests tests/
 
-## Submitting a Pull Request
+## Submitting a pull request
 
 1. Fork this repository.
 2. Create a branch `git checkout -b my_feature`.
