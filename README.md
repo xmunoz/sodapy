@@ -43,6 +43,8 @@ Import the library and set up a connection to get started.
 
 ### get
 
+`get(dataset_identifier, content_type="json", **kwargs)`
+
 Retrieve data from the requested resources. Filter and query data by field name, id, or using [SoQL keywords](https://dev.socrata.com/docs/queries/).
 
     >>> client.get("nimj-3ivp", limit=2)
@@ -59,12 +61,16 @@ Retrieve data from the requested resources. Filter and query data by field name,
 
 ### get_metadata
 
+`get_metadata(dataset_identifier, content_type="json")`
+
 Retrieve the metadata associated with a particular dataset.
 
     >>> client.get_metadata("nimj-3ivp")
     {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "http://foo.bar.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
 
 ### download_attachments
+
+`download_attachments(dataset_identifier, content_type="json", download_dir="~/sodapy_downloads")`
 
 Download all attachments associated with a dataset.
 
@@ -73,11 +79,17 @@ Download all attachments associated with a dataset.
         /Users/xmunoz/Desktop/nimj-3ivp/FireIncident_Codes.PDF
         /Users/xmunoz/Desktop/nimj-3ivp/AccidentReport.jpg
 
-The default download path is `~/sodapy_downloads`.
-
 ### create
 
-Create a new dataset.
+`create(name, **kwargs)`
+
+Create a new dataset. Create a dataset, including the field types. Optionally, specify keyword args such as:
+- `description` description of the dataset
+- `columns` list of fields
+- `category` dataset category (must exist in /admin/metadata)
+- `tags` list of tag strings
+- `row_identifier` field name of primary key
+- `new_backend` whether to create the dataset in the new backend
 
 	>>> columns = [{"fieldName": "delegation", "name": "Delegation", "dataTypeName": "text"}, {"fieldName": "members", "name": "Members", "dataTypeName": "number"}]
 	>>> tags = ["politics", "geography"]
@@ -86,6 +98,8 @@ Create a new dataset.
 
 ### publish
 
+`publish(dataset_identifier, content_type="json")`
+
 Publish a dataset after creating it, i.e. take it out of 'working copy' mode. The dataset id `id` returned from `create` will be used to publish.
 
 	>>> client.publish("2frc-hyvj")
@@ -93,12 +107,16 @@ Publish a dataset after creating it, i.e. take it out of 'working copy' mode. Th
 
 ### set_permission
 
+`set_permission(dataset_identifier, permission="private", content_type="json")`
+
 Set the permissions of a dataset to public or private.
 
 	>>> client.set_permission("2frc-hyvj", "public")
 	<Response [200]>
 
 ### upsert
+
+`upsert(dataset_identifier, payload, content_type="json")`
 
 Create a new row in an existing dataset.
 
@@ -120,6 +138,8 @@ Update/Delete rows in a dataset.
 
 ### replace
 
+`replace(dataset_identifier, payload, content_type="json")`
+
 Similar in usage to `upsert`, but overwrites existing data.
 
 	>>> data = open("replace_test.csv")
@@ -128,9 +148,11 @@ Similar in usage to `upsert`, but overwrites existing data.
 
 ### delete
 
+`delete(dataset_identifier, row_id=None, content_type="json")`
+
 Delete an individual row.
 
-	>>> client.delete("nimj-3ivp", id=2)
+	>>> client.delete("nimj-3ivp", row_id=2)
 	<Response [200]>
 
 Delete the entire dataset.
@@ -138,8 +160,9 @@ Delete the entire dataset.
 	>>> client.delete("nimj-3ivp")
 	<Response [200]>
 
-
 ### close
+
+`close()`
 
 Close the seesion when you're finished.
 

@@ -257,7 +257,7 @@ class Socrata(object):
         Delete the entire dataset, e.g.
             client.delete("nimj-3ivp")
         or a single row, e.g.
-            client.delete("nimj-3ivp", id=4)
+            client.delete("nimj-3ivp", row_id=4)
         '''
         if row_id:
             resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataset_identifier, row_id,
@@ -351,7 +351,7 @@ def authentication_validation(username, password, access_token):
     '''
     Only accept one form of authentication.
     '''
-    if bool(username) != bool(password):
+    if bool(username) is not bool(password):
         raise Exception("Basic authentication requires a username AND"
                         " password.")
     if (username and access_token) or (password and access_token):
