@@ -21,15 +21,15 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 ### Table of Contents
 
 - [client](#client)
-- [`get`](#get)
-- [`get_metadata`](#get_metadata)
-- [`download_attachments`](#download_attachments)
-- [`create`](#create)
-- [`publish`](#publish)
-- [`set_permission`](#set_permission)
-- [`upsert`](#upsert)
-- [`replace`](#replace)
-- [`delete`](#delete)
+- [`get`](#getdataset_identifier-content_typejson-kwargs)
+- [`get_metadata`](#get_metadatadataset_identifier-content_typejson)
+- [`download_attachments`](#download_attachmentsdataset_identifier-content_typejson-download_dirsodapy_downloads)
+- [`create`](#createname-kwargs)
+- [`publish`](#publishdataset_identifier-content_typejson)
+- [`set_permission`](#set_permissiondataset_identifier-permissionprivate-content_typejson)
+- [`upsert`](#upsertdataset_identifier-payload-content_typejson)
+- [`replace`](#replacedataset_identifier-payload-content_typejson)
+- [`delete`](#deletedataset_identifier-row_idnone-content_typejson)
 - [`close`](#close)
 
 ### client
