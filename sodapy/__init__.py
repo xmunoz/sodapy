@@ -7,9 +7,6 @@ import json
 import re
 import os
 
-__author__ = "Cristina Munoz <hi@xmunoz.com>"
-
-
 class Socrata(object):
     '''
     The main class that interacts with the SODA API. Sample usage:
