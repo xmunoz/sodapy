@@ -212,7 +212,12 @@ def test_set_permission():
     # Test request
     request = adapter.request_history[0]
     query_string = request.url.split("?")[-1]
-    assert query_string == "method=setPermission&value=public.read"
+    params = query_string.split("&")
+
+    assert len(params) == 2
+    assert "method=setPermission" in params
+    assert "value=public.read" in params
+
     client.close()
 
 def test_publish():
