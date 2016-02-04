@@ -1,11 +1,9 @@
 #!/usr/bin/env python
 
 from setuptools import setup
-# Provides Python 2/3 compatability
-from past.builtins import execfile
-from builtins import str
 
-execfile("sodapy/version.py")
+with open("sodapy/version.py") as f:
+    exec(f.read())
 
 try:
     import pypandoc

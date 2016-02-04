@@ -4,6 +4,9 @@ MANIFEST
 # virtualenv
 venv_*
 
+# cache
+.cache
+
 # C extensions
 *.so
 
