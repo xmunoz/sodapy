@@ -13,6 +13,8 @@ try:
 except(IOError, ImportError):
     long_description = open('README').read()
 
+with open('requirements.txt') as requirements:
+    required = requirements.read().splitlines()
 
 kwargs = {
     "name": "sodapy",
@@ -25,7 +27,7 @@ kwargs = {
     "author_email": "hi@xmunoz.com",
     "maintainer_email": "hi@xmunoz.com",
     "license": "MIT",
-    "install_requires": ["py", "pytest", "requests", "requests-mock", "six", "future"],
+    "install_requires": required,
     "url": "https://github.com/xmunoz/sodapy",
     "download_url": "https://github.com/xmunoz/sodapy/archive/master.tar.gz",
     "keywords": "soda socrata opendata api",
