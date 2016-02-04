@@ -10,7 +10,7 @@ If you want to install from source, then clone this repository and run `python s
 
 ## Requirements
 
-At its core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt). `sodapy` is currently be compatible with Python 2.6, 2.7, 3.3, 3.4 and 3.5.
+At its core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt). `sodapy` is currently compatible with Python 2.6, 2.7, 3.3, 3.4 and 3.5.
 
 ## Documentation
 
