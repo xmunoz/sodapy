@@ -1,4 +1,4 @@
-from sodapy.constants import MAX_LIMIT, DEFAULT_API_PREFIX
+from sodapy.constants import DEFAULT_API_PREFIX
 
 import requests
 from cStringIO import StringIO
@@ -198,13 +198,6 @@ class Socrata(object):
         # Additional parameters, such as field names
         params.update(kwargs)
         params = _clear_empty_values(params)
-
-        if params.get("$limit") and params["$limit"] > MAX_LIMIT:
-            raise Exception("Max limit exceeded! {0} is greater than the"
-                            " Socrata API limit of {1}. More information on"
-                            " the official API docs:"
-                            " http://dev.socrata.com/docs/paging.html"
-                            .format(params["$limit"], MAX_LIMIT))
 
         response = self._perform_request("get", resource, headers=headers,
                                          params=params)
