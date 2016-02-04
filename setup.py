@@ -1,9 +1,5 @@
 #!/usr/bin/env python
 
-# Provides Python 2/3 compatability 
-from past.builtins import execfile
-from builtins import str
-
 from setuptools import setup
 execfile("sodapy/version.py")
 
@@ -25,7 +21,7 @@ kwargs = {
     "author_email": "hi@xmunoz.com",
     "maintainer_email": "hi@xmunoz.com",
     "license": "MIT",
-    "install_requires": ["py", "pytest", "requests", "requests-mock", "six", "future"],
+    "install_requires": ["py", "pytest", "requests", "requests-mock", "six"],
     "url": "https://github.com/xmunoz/sodapy",
     "download_url": "https://github.com/xmunoz/sodapy/archive/master.tar.gz",
     "keywords": "soda socrata opendata api",
