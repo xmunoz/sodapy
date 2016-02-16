@@ -155,10 +155,6 @@ Close the seesion when you're finished.
 
     $ ./runtests tests/
 
-## Compatibility
-
-This library is compatible with python 2.6.x and python 2.7.x. There is a slightly out-of-date python3-compatible branch available. [Look here](https://github.com/xmunoz/sodapy/issues/4) for build instructions.
-
 ## Contributing
 
 See [CONTRIBUTING.md](https://github.com/xmunoz/sodapy/blob/master/CONTRIBUTING.md).
