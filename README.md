@@ -29,6 +29,8 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 - [`set_permission`](#set_permissiondataset_identifier-permissionprivate-content_typejson)
 - [`upsert`](#upsertdataset_identifier-payload-content_typejson)
 - [`replace`](#replacedataset_identifier-payload-content_typejson)
+- [`createNonDataSet`](#createnondatasetpayload-files-content_typejson)
+- [`replaceNonDataSet`](#replacenondatasetdataset_identifier-payload-files-content_typejson)
 - [`delete`](#deletedataset_identifier-row_idnone-content_typejson)
 - [`close`](#close)
 
@@ -132,6 +134,37 @@ Similar in usage to `upsert`, but overwrites existing data.
 	>>> data = open("replace_test.csv")
 	>>> client.replace("eb9n-hr43", data)
 	{u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 0, u'By SID': 0, u'Rows Created': 12, u'By RowIdentifier': 0}
+
+### createNonDataSet(payload, files, content_type="json")
+
+Creates a new file-based dataset with the name provided in the files
+tuple.  A valid file input would be:
+
+```
+files = (
+    {'file': ("gtfs2", open('myfile.zip', 'rb'))}
+)
+```
+
+    >>> with open(nondatasetfile_path, 'rb') as fin:
+    >>>     files = (
+    >>>         {'file': ("nondatasetfile.zip", fin)}
+    >>>     )
+    >>>     response = client.createNonDataSet(payload, files)
+
+###replaceNonDataSet(dataset_identifier, payload, files, content_type="json")
+
+Same as createNonDataSet, but replaces a file that already exists in a 
+file-based dataset.  
+
+WARNING: a table-based dataset cannot be replaced by a file-based dataset.  Use createNonDataSet in order to replace.
+
+    >>>  with open(nondatasetfile_path, 'rb') as fin:
+    >>>      files = (
+    >>>          {'file': ("nondatasetfile.zip", fin)}
+    >>>      )
+    >>>      response = client.replaceNonDataSet(DATASET_IDENTIFIER, {}, files)
+
 
 ### delete(dataset_identifier, row_id=None, content_type="json")
 
