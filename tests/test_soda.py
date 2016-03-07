@@ -236,7 +236,7 @@ def test_publish():
     assert len(response.get("id")) == 9
     client.close()
 
-def test_importNonDataSet():
+def test_importNonDataFile():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -247,20 +247,20 @@ def test_importNonDataSet():
     response_data = "successblobres.txt"
     nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
 
-    setup_importNonDataSet(adapter, "POST", response_data, 200)
+    setup_importNonDataFile(adapter, "POST", response_data, 200)
 
     with open(nondatasetfile_path, 'rb') as fin:
-        files = (
+        file = (
             {'file': ("nondatasetfile.zip", fin)}
         )
-        response = client.createNonDataSet({}, files)
+        response = client.createNonDataFile({}, file)
 
     assert isinstance(response, dict)
     assert response.get("blobFileSize") == 496
     client.close()
 
 
-def test_replaceNonDataSet():
+def test_replaceNonDataFile():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -271,13 +271,13 @@ def test_replaceNonDataSet():
     response_data = "successblobres.txt"
     nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
 
-    setup_replaceNonDataSet(adapter, "POST", response_data, 200)
+    setup_replaceNonDataFile(adapter, "POST", response_data, 200)
 
     with open(nondatasetfile_path, 'rb') as fin:
-        files = (
+        file = (
             {'file': ("nondatasetfile.zip", fin)}
         )
-        response = client.replaceNonDataSet(DATASET_IDENTIFIER, {}, files)
+        response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
 
     assert isinstance(response, dict)
     assert response.get("blobFileSize") == 496
@@ -302,7 +302,7 @@ def setup_publish_mock(adapter, method, response, response_code, reason="OK",
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
-def setup_importNonDataSet(adapter, method, response, response_code, reason="OK",
+def setup_importNonDataFile(adapter, method, response, response_code, reason="OK",
                         dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
@@ -318,7 +318,7 @@ def setup_importNonDataSet(adapter, method, response, response_code, reason="OK"
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
-def setup_replaceNonDataSet(adapter, method, response, response_code, reason="OK",
+def setup_replaceNonDataFile(adapter, method, response, response_code, reason="OK",
                         dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)

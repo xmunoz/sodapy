@@ -229,7 +229,7 @@ class Socrata(object):
 
         return self._perform_update("put", resource, payload)
 
-    def createNonDataSet(self, payload, files, content_type="json"):
+    def createNonDataFile(self, params, file):
         '''
         Creates a new file-based dataset with the name provided in the files
         tuple.  A valid file input would be:
@@ -238,14 +238,13 @@ class Socrata(object):
         )
         '''
         api_prefix = '/api/imports2/'
-        resource = "{0}".format(api_prefix)
 
-        if not payload.get('method', None):
-            payload['method'] = 'blob'
+        if not params.get('method', None):
+            params['method'] = 'blob'
 
-        return self._perform_request("post", resource, params=payload, files=files)
+        return self._perform_request("post", api_prefix, params=params, files=file)
 
-    def replaceNonDataSet(self, dataset_identifier, payload, files, content_type="json"):
+    def replaceNonDataFile(self, dataset_identifier, params, file):
         '''
         Same as createNonDataSet, but replaces a file that already exists in a 
         file-based dataset.  
@@ -256,12 +255,12 @@ class Socrata(object):
         api_prefix = '/api/views/'
         resource = "{0}{1}.{2}".format(api_prefix, dataset_identifier, "txt")
 
-        if not payload.get('method', None):
-            payload['method'] = 'replaceBlob'
+        if not params.get('method', None):
+            params['method'] = 'replaceBlob'
 
-        payload['id'] = dataset_identifier
+        params['id'] = dataset_identifier
 
-        return self._perform_request("post", resource, params=payload, files=files)
+        return self._perform_request("post", resource, params=params, files=file)
 
     def _perform_update(self, method, resource, payload):
         '''
