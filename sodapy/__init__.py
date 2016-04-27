@@ -229,6 +229,39 @@ class Socrata(object):
 
         return self._perform_update("put", resource, payload)
 
+    def createNonDataFile(self, params, file):
+        '''
+        Creates a new file-based dataset with the name provided in the files
+        tuple.  A valid file input would be:
+        files = (
+            {'file': ("gtfs2", open('myfile.zip', 'rb'))}
+        )
+        '''
+        api_prefix = '/api/imports2/'
+
+        if not params.get('method', None):
+            params['method'] = 'blob'
+
+        return self._perform_request("post", api_prefix, params=params, files=file)
+
+    def replaceNonDataFile(self, dataset_identifier, params, file):
+        '''
+        Same as createNonDataSet, but replaces a file that already exists in a 
+        file-based dataset.  
+
+        WARNING: a table-based dataset cannot be replaced by a file-based dataset.
+                 Use createNonDataSet in order to replace.
+        '''
+        api_prefix = '/api/views/'
+        resource = "{0}{1}.{2}".format(api_prefix, dataset_identifier, "txt")
+
+        if not params.get('method', None):
+            params['method'] = 'replaceBlob'
+
+        params['id'] = dataset_identifier
+
+        return self._perform_request("post", resource, params=params, files=file)
+
     def _perform_update(self, method, resource, payload):
         '''
         Execute the update task.
@@ -297,6 +330,11 @@ class Socrata(object):
             return [line for line in csv.reader(csv_stream)]
         elif re.match(r'application\/rdf\+xml;\s*charset=utf-8', content_type):
             return response.content
+        elif re.match(r'text\/plain;\s*charset=utf-8', content_type):
+            try:
+                return json.loads(response.text)
+            except ValueError:
+                return response.text
         else:
             raise Exception("Unknown response format: {0}"
                             .format(content_type))

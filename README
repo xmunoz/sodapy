@@ -47,6 +47,8 @@ Table of Contents
 -  ```set_permission`` <#set_permissiondataset_identifier-permissionprivate-content_typejson>`__
 -  ```upsert`` <#upsertdataset_identifier-payload-content_typejson>`__
 -  ```replace`` <#replacedataset_identifier-payload-content_typejson>`__
+-  ```createNonDataFile``` <#createnondatafilepayload-files-content_typejson>`__
+-  ```replaceNonDataFile``` <#replacenondatafiledataset_identifier-payload-files-content_typejson>`__
 -  ```delete`` <#deletedataset_identifier-row_idnone-content_typejson>`__
 -  ```close`` <#close>`__
 
@@ -188,6 +190,41 @@ Similar in usage to ``upsert``, but overwrites existing data.
     >>> data = open("replace_test.csv")
     >>> client.replace("eb9n-hr43", data)
     {u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 0, u'By SID': 0, u'Rows Created': 12, u'By RowIdentifier': 0}
+
+
+createNonDataFile(params, file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Creates a new file-based dataset with the name provided in the files
+tuple.  A valid file input would be:
+
+::
+files = (
+    {'file': ("gtfs2", open('myfile.zip', 'rb'))}
+)
+
+::
+    >>> with open(nondatafile_path, 'rb') as fin:
+    >>>     files = (
+    >>>         {'file': ("nondatafile.zip", fin)}
+    >>>     )
+    >>>     response = client.createNonDataFile(params, file)
+
+replaceNonDataFile(dataset\_identifier, params, file)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Same as createNonDataFile, but replaces a file that already exists in a 
+file-based dataset.  
+
+WARNING: a table-based dataset cannot be replaced by a file-based dataset.  Use createNonDataFile in order to replace.
+
+::
+    >>>  with open(nondatafile_path, 'rb') as fin:
+    >>>      files = (
+    >>>          {'file': ("nondatafile.zip", fin)}
+    >>>      )
+    >>>      response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
+
 
 delete(dataset\_identifier, row\_id=None, content\_type="json")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -236,6 +236,55 @@ def test_publish():
     assert len(response.get("id")) == 9
     client.close()
 
+def test_importNonDataFile():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
+                     session_adapter=mock_adapter)
+
+    response_data = "successblobres.txt"
+    nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
+
+    setup_importNonDataFile(adapter, "POST", response_data, 200)
+
+    with open(nondatasetfile_path, 'rb') as fin:
+        file = (
+            {'file': ("nondatasetfile.zip", fin)}
+        )
+        response = client.createNonDataFile({}, file)
+
+    assert isinstance(response, dict)
+    assert response.get("blobFileSize") == 496
+    client.close()
+
+
+def test_replaceNonDataFile():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
+                     session_adapter=mock_adapter)
+
+    response_data = "successblobres.txt"
+    nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
+
+    setup_replaceNonDataFile(adapter, "POST", response_data, 200)
+
+    with open(nondatasetfile_path, 'rb') as fin:
+        file = (
+            {'file': ("nondatasetfile.zip", fin)}
+        )
+        response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
+
+    assert isinstance(response, dict)
+    assert response.get("blobFileSize") == 496
+    client.close()
+
+
+
 def setup_publish_mock(adapter, method, response, response_code, reason="OK",
                         dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
@@ -248,6 +297,39 @@ def setup_publish_mock(adapter, method, response, response_code, reason="OK",
 
     headers = {
         "content-type": "application/json; charset=utf-8"
+    }
+
+    adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
+                         headers=headers)
+
+def setup_importNonDataFile(adapter, method, response, response_code, reason="OK",
+                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+
+    path = os.path.join(TEST_DATA_PATH, response)
+    with open(path, "r") as response_body:
+        body = json.load(response_body)
+
+    uri = "{0}{1}/api/imports2/?method=blob".format(PREFIX, DOMAIN)
+
+    headers = {
+        "content-type": "application/json; charset=utf-8"
+    }
+
+    adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
+                         headers=headers)
+
+def setup_replaceNonDataFile(adapter, method, response, response_code, reason="OK",
+                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+
+    path = os.path.join(TEST_DATA_PATH, response)
+    with open(path, "r") as response_body:
+        body = json.load(response_body)
+
+    uri = "{0}{1}/api/views/{2}.{3}?method=replaceBlob&id={4}".format(PREFIX, DOMAIN, dataset_identifier,
+                                                        "txt", dataset_identifier)
+
+    headers = {
+        "content-type": "text/plain; charset=utf-8"
     }
 
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
