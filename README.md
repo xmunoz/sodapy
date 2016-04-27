@@ -29,8 +29,8 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 - [`set_permission`](#set_permissiondataset_identifier-permissionprivate-content_typejson)
 - [`upsert`](#upsertdataset_identifier-payload-content_typejson)
 - [`replace`](#replacedataset_identifier-payload-content_typejson)
-- [`createNonDataFile`](#createnondatafilepayload-files-content_typejson)
-- [`replaceNonDataFile`](#replacenondatafiledataset_identifier-payload-files-content_typejson)
+- [`create_non_data_file`](#create_non_data_filepayload-files-content_typejson)
+- [`replace_non_data_file`](#replace_non_data_file_dataset_identifier-payload-files-content_typejson)
 - [`delete`](#deletedataset_identifier-row_idnone-content_typejson)
 - [`close`](#close)
 
@@ -135,7 +135,7 @@ Similar in usage to `upsert`, but overwrites existing data.
 	>>> client.replace("eb9n-hr43", data)
 	{u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 0, u'By SID': 0, u'Rows Created': 12, u'By RowIdentifier': 0}
 
-### createNonDataFile(params, file)
+### create_non_data_file(params, file_obj)
 
 Creates a new file-based dataset with the name provided in the files
 tuple.  A valid file input would be:
@@ -146,24 +146,24 @@ files = (
 )
 ```
 
-    >>> with open(nondatafile_path, 'rb') as fin:
+    >>> with open(nondatafile_path, 'rb') as f:
     >>>     files = (
-    >>>         {'file': ("nondatafile.zip", fin)}
+    >>>         {'file': ("nondatafile.zip", f)}
     >>>     )
-    >>>     response = client.createNonDataFile(params, file)
+    >>>     response = client.create_non_data_file(params, files)
 
-###replaceNonDataFile(dataset_identifier, params, file)
+### replace_non_data_file(dataset_identifier, params, file_obj)
 
-Same as createNonDataFile, but replaces a file that already exists in a 
+Same as create_non_data_file, but replaces a file that already exists in a
 file-based dataset.  
 
-WARNING: a table-based dataset cannot be replaced by a file-based dataset.  Use createNonDataFile in order to replace.
+WARNING: a table-based dataset cannot be replaced by a file-based dataset. Use create_non_data_file in order to replace.
 
-    >>>  with open(nondatafile_path, 'rb') as fin:
+    >>>  with open(nondatafile_path, 'rb') as f:
     >>>      files = (
-    >>>          {'file': ("nondatafile.zip", fin)}
+    >>>          {'file': ("nondatafile.zip", f)}
     >>>      )
-    >>>      response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
+    >>>      response = client.replace_non_data_file(DATASET_IDENTIFIER, {}, files)
 
 
 ### delete(dataset_identifier, row_id=None, content_type="json")

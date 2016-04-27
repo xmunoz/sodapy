@@ -76,27 +76,6 @@ def test_upsert_exception():
     else:
         raise AssertionError("No exception raised for bad request.")
 
-def test_upsert_exception():
-    mock_adapter = {}
-    mock_adapter["prefix"] = PREFIX
-    adapter = requests_mock.Adapter()
-    mock_adapter["adapter"] = adapter
-    client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
-
-    response_data = "403_response_json.txt"
-    setup_mock(adapter, "POST", response_data, 403, reason="Forbidden")
-
-    data = [{"theme": "Surfing", "artist": "Wavves",
-             "title": "King of the Beach", "year": "2010"}]
-    try:
-        client.upsert(DATASET_IDENTIFIER, data)
-    except Exception as e:
-        assert isinstance(e, requests.exceptions.HTTPError)
-    else:
-        raise AssertionError("No exception raised for bad request.")
-    finally:
-        client.close()
-
 
 def test_upsert():
     mock_adapter = {}
@@ -236,7 +215,7 @@ def test_publish():
     assert len(response.get("id")) == 9
     client.close()
 
-def test_importNonDataFile():
+def test_import_non_data_file():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -247,20 +226,20 @@ def test_importNonDataFile():
     response_data = "successblobres.txt"
     nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
 
-    setup_importNonDataFile(adapter, "POST", response_data, 200)
+    setup_import_non_data_file(adapter, "POST", response_data, 200)
 
-    with open(nondatasetfile_path, 'rb') as fin:
-        file = (
-            {'file': ("nondatasetfile.zip", fin)}
+    with open(nondatasetfile_path, 'rb') as f:
+        files = (
+            {'file': ("nondatasetfile.zip", f)}
         )
-        response = client.createNonDataFile({}, file)
+        response = client.create_non_data_file({}, files)
 
     assert isinstance(response, dict)
     assert response.get("blobFileSize") == 496
     client.close()
 
 
-def test_replaceNonDataFile():
+def test_replace_non_data_file():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -271,13 +250,13 @@ def test_replaceNonDataFile():
     response_data = "successblobres.txt"
     nondatasetfile_path = 'tests/test_data/nondatasetfile.zip'
 
-    setup_replaceNonDataFile(adapter, "POST", response_data, 200)
+    setup_replace_non_data_file(adapter, "POST", response_data, 200)
 
     with open(nondatasetfile_path, 'rb') as fin:
         file = (
             {'file': ("nondatasetfile.zip", fin)}
         )
-        response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
+        response = client.replace_non_data_file(DATASET_IDENTIFIER, {}, file)
 
     assert isinstance(response, dict)
     assert response.get("blobFileSize") == 496
@@ -302,7 +281,7 @@ def setup_publish_mock(adapter, method, response, response_code, reason="OK",
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
-def setup_importNonDataFile(adapter, method, response, response_code, reason="OK",
+def setup_import_non_data_file(adapter, method, response, response_code, reason="OK",
                         dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
@@ -318,7 +297,7 @@ def setup_importNonDataFile(adapter, method, response, response_code, reason="OK
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
-def setup_replaceNonDataFile(adapter, method, response, response_code, reason="OK",
+def setup_replace_non_data_file(adapter, method, response, response_code, reason="OK",
                         dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)

@@ -229,7 +229,7 @@ class Socrata(object):
 
         return self._perform_update("put", resource, payload)
 
-    def createNonDataFile(self, params, file):
+    def create_non_data_file(self, params, file_data):
         '''
         Creates a new file-based dataset with the name provided in the files
         tuple.  A valid file input would be:
@@ -242,15 +242,15 @@ class Socrata(object):
         if not params.get('method', None):
             params['method'] = 'blob'
 
-        return self._perform_request("post", api_prefix, params=params, files=file)
+        return self._perform_request("post", api_prefix, params=params, files=file_data)
 
-    def replaceNonDataFile(self, dataset_identifier, params, file):
+    def replace_non_data_file(self, dataset_identifier, params, file_data):
         '''
-        Same as createNonDataSet, but replaces a file that already exists in a 
+        Same as create_non_data_file, but replaces a file that already exists in a 
         file-based dataset.  
 
         WARNING: a table-based dataset cannot be replaced by a file-based dataset.
-                 Use createNonDataSet in order to replace.
+                 Use create_non_data_file in order to replace.
         '''
         api_prefix = '/api/views/'
         resource = "{0}{1}.{2}".format(api_prefix, dataset_identifier, "txt")
@@ -260,7 +260,7 @@ class Socrata(object):
 
         params['id'] = dataset_identifier
 
-        return self._perform_request("post", resource, params=params, files=file)
+        return self._perform_request("post", resource, params=params, files=file_data)
 
     def _perform_update(self, method, resource, payload):
         '''
