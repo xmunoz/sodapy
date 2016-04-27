@@ -313,14 +313,12 @@ def _raise_for_status(response):
     '''
     Custom raise_for_status with more appropriate error message.
     '''
-    http_error_msg = ""
-
     if 400 <= response.status_code < 500:
-        http_error_msg = "{0} Client Error: {1}".format(response.status_code,
+        http_error_msg = u"{0} Client Error: {1}".format(response.status_code,
                                                         response.reason)
 
     elif 500 <= response.status_code < 600:
-        http_error_msg = "{0} Server Error: {1}".format(response.status_code,
+        http_error_msg = u"{0} Server Error: {1}".format(response.status_code,
                                                         response.reason)
 
     if http_error_msg:
@@ -329,7 +327,7 @@ def _raise_for_status(response):
         except ValueError:
             more_info = None
         if more_info and more_info.lower() != response.reason.lower():
-            http_error_msg += ".\n\t{0}".format(more_info)
+            http_error_msg += u".\n\t{0}".format(more_info)
         raise requests.exceptions.HTTPError(http_error_msg, response=response)
 
 
