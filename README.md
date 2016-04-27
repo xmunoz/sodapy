@@ -29,8 +29,8 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 - [`set_permission`](#set_permissiondataset_identifier-permissionprivate-content_typejson)
 - [`upsert`](#upsertdataset_identifier-payload-content_typejson)
 - [`replace`](#replacedataset_identifier-payload-content_typejson)
-- [`create_non_data_file`](#create_non_data_filepayload-files-content_typejson)
-- [`replace_non_data_file`](#replace_non_data_file_dataset_identifier-payload-files-content_typejson)
+- [`create_non_data_file`](#create_non_data_fileparams-file_obj)
+- [`replace_non_data_file`](#replace_non_data_filedataset_identifier-params-file_obj)
 - [`delete`](#deletedataset_identifier-row_idnone-content_typejson)
 - [`close`](#close)
 
