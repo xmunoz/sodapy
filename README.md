@@ -43,6 +43,11 @@ Import the library and set up a connection to get started.
 
 `username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be sujected to strict throttling limits.
 
+Since we currently do not have a username, password, or APIToken we will
+initialize the Socrata client with the following.
+
+    >>> client = Socrata("sandbox.demo.socrata.com", "")
+
 ### get(dataset_identifier, content_type="json", **kwargs)
 
 Retrieve data from the requested resources. Filter and query data by field name, id, or using [SoQL keywords](https://dev.socrata.com/docs/queries/).
