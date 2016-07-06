@@ -41,7 +41,9 @@ Import the library and set up a connection to get started.
     >>> from sodapy import Socrata
     >>> client = Socrata("sandbox.demo.socrata.com", "FakeAppToken", username="fakeuser@somedomain.com", password="ndKS92mS01msjJKs")
 
-`username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be sujected to strict throttling limits.
+`username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be sujected to strict throttling limits. To create a bare-bones client:
+
+    >>> client = Socrata("sandbox.demo.socrata.com", None)
 
 ### get(dataset_identifier, content_type="json", **kwargs)
 
