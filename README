@@ -41,14 +41,15 @@ Table of Contents
 -  `client <#client>`__
 -  ```get`` <#getdataset_identifier-content_typejson-kwargs>`__
 -  ```get_metadata`` <#get_metadatadataset_identifier-content_typejson>`__
+-  ```update_metadata`` <#update_metadatadataset_identifier-update_fields-content_typejson>`__
 -  ```download_attachments`` <#download_attachmentsdataset_identifier-content_typejson-download_dirsodapy_downloads>`__
 -  ```create`` <#createname-kwargs>`__
 -  ```publish`` <#publishdataset_identifier-content_typejson>`__
 -  ```set_permission`` <#set_permissiondataset_identifier-permissionprivate-content_typejson>`__
 -  ```upsert`` <#upsertdataset_identifier-payload-content_typejson>`__
 -  ```replace`` <#replacedataset_identifier-payload-content_typejson>`__
--  ```createNonDataFile``` <#createnondatafilepayload-files-content_typejson>`__
--  ```replaceNonDataFile``` <#replacenondatafiledataset_identifier-payload-files-content_typejson>`__
+-  ```create_non_data_file`` <#create_non_data_fileparams-file_obj>`__
+-  ```replace_non_data_file`` <#replace_non_data_filedataset_identifier-params-file_obj>`__
 -  ```delete`` <#deletedataset_identifier-row_idnone-content_typejson>`__
 -  ```close`` <#close>`__
 
@@ -65,8 +66,10 @@ Import the library and set up a connection to get started.
 ``username`` and ``password`` are only required for creating or
 modifying data. An application token isn't strictly required (can be
 ``None``), but queries executed from a client without an application
-token will be sujected to strict throttling limits. To create a bare-
-bones client:
+token will be sujected to strict throttling limits. To create a
+bare-bones client:
+
+::
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
@@ -100,6 +103,21 @@ Retrieve the metadata associated with a particular dataset.
 
     >>> client.get_metadata("nimj-3ivp")
     {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "http://foo.bar.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
+
+update\_metadata(dataset\_identifier, update\_fields, content\_type="json")
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Update the metadata for a particular dataset. ``update_fields`` should
+be a dictionary containing the the metadata keys that you wish to
+overwrite.
+
+Note: Invalid payloads to this method could corrupt the dataset or
+visualization.
+
+::
+
+    >>> client.update_metadata("nimj-3ivp", {"attributionLink": "https://anothertest.com"})
+    {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "https://anothertest.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
 
 download\_attachments(dataset\_identifier, content\_type="json", download\_dir="~/sodapy\_downloads")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -194,40 +212,42 @@ Similar in usage to ``upsert``, but overwrites existing data.
     >>> client.replace("eb9n-hr43", data)
     {u'Errors': 0, u'Rows Deleted': 0, u'Rows Updated': 0, u'By SID': 0, u'Rows Created': 12, u'By RowIdentifier': 0}
 
-
-createNonDataFile(params, file)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+create\_non\_data\_file(params, file\_obj)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Creates a new file-based dataset with the name provided in the files
-tuple.  A valid file input would be:
+tuple. A valid file input would be:
 
 ::
-files = (
-    {'file': ("gtfs2", open('myfile.zip', 'rb'))}
-)
+
+    files = (
+        {'file': ("gtfs2", open('myfile.zip', 'rb'))}
+    )
 
 ::
-    >>> with open(nondatafile_path, 'rb') as fin:
+
+    >>> with open(nondatafile_path, 'rb') as f:
     >>>     files = (
-    >>>         {'file': ("nondatafile.zip", fin)}
+    >>>         {'file': ("nondatafile.zip", f)}
     >>>     )
-    >>>     response = client.createNonDataFile(params, file)
+    >>>     response = client.create_non_data_file(params, files)
 
-replaceNonDataFile(dataset\_identifier, params, file)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+replace\_non\_data\_file(dataset\_identifier, params, file\_obj)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Same as createNonDataFile, but replaces a file that already exists in a 
-file-based dataset.  
+Same as create\_non\_data\_file, but replaces a file that already exists
+in a file-based dataset.
 
-WARNING: a table-based dataset cannot be replaced by a file-based dataset.  Use createNonDataFile in order to replace.
+Note: a table-based dataset cannot be replaced by a file-based dataset.
+Use create\_non\_data\_file in order to replace.
 
 ::
-    >>>  with open(nondatafile_path, 'rb') as fin:
-    >>>      files = (
-    >>>          {'file': ("nondatafile.zip", fin)}
-    >>>      )
-    >>>      response = client.replaceNonDataFile(DATASET_IDENTIFIER, {}, file)
 
+    >>>  with open(nondatafile_path, 'rb') as f:
+    >>>      files = (
+    >>>          {'file': ("nondatafile.zip", f)}
+    >>>      )
+    >>>      response = client.replace_non_data_file(DATASET_IDENTIFIER, {}, files)
 
 delete(dataset\_identifier, row\_id=None, content\_type="json")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

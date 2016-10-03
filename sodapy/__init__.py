@@ -127,6 +127,17 @@ class Socrata(object):
         resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
         return self._perform_request("get", resource)
 
+    def update_metadata(self, dataset_identifier, update_fields, content_type="json"):
+        '''
+        Update the metadata for a particular dataset.
+            update_fields is a dictionary containing [metadata key:new value] pairs.
+
+        This method performs a full replace for the key:value pairs listed in `update_fields`, and
+        returns all of the metadata with the updates applied.
+        '''
+        resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
+        return self._perform_update("put", resource, update_fields)
+
     def download_attachments(self, dataset_identifier, content_type="json",
                              download_dir="~/sodapy_downloads"):
         '''
