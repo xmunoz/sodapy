@@ -2,7 +2,7 @@
 MANIFEST
 
 # virtualenv
-venv_*
+venv*
 
 # cache
 .cache

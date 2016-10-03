@@ -1,10 +1,9 @@
-from __future__ import print_function
-from __future__ import absolute_import
+from __future__ import print_function, absolute_import
 from future import standard_library
 standard_library.install_aliases()
 from builtins import object
 
-from .constants import DEFAULT_API_PREFIX
+from .constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
 
 import requests
 from io import StringIO
@@ -90,7 +89,7 @@ class Socrata(object):
         WARNING: This api endpoint might be deprecated.
         '''
         new_backend = kwargs.pop("new_backend", False)
-        resource = "/api/views.json"
+        resource = _format_old_api_request(content_type="json")
         if new_backend:
             resource += "?nbe=true"
 
@@ -111,9 +110,9 @@ class Socrata(object):
         Set a dataset's permissions to private or public
         Options are private, public
 
-        WARNING: This api endpoint might be deprecated.
         '''
-        resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
+        resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
+
         params = {
             "method": "setPermission",
             "value": "public.read" if permission == "public" else permission
@@ -125,7 +124,7 @@ class Socrata(object):
         '''
         Retrieve the metadata for a particular dataset.
         '''
-        resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
+        resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
         return self._perform_request("get", resource)
 
     def download_attachments(self, dataset_identifier, content_type="json",
@@ -143,8 +142,9 @@ class Socrata(object):
 
         for attachment in attachments:
             file_path = os.path.join(download_dir, attachment["filename"])
-            resource = "/api/views/{0}/files/{1}?download=true&filename={2}".format(
-                dataset_identifier, attachment["assetId"], attachment["filename"])
+            base = _format_old_api_request(dataid=dataset_identifier)
+            resource = "{0}/files/{1}?download=true&filename={2}".format(base, attachment["assetId"],
+                                                                         attachment["filename"])
             uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
             _download_file(uri, file_path)
             files.append(file_path)
@@ -155,10 +155,9 @@ class Socrata(object):
         '''
         The create() method creates a dataset in a "working copy" state.
         This method publishes it.
-
-        WARNING: This api endpoint might be deprecated.
         '''
-        resource = "/api/views/{0}/publication.{1}".format(dataset_identifier, content_type)
+        base = _format_old_api_request(dataid=dataset_identifier)
+        resource = "{0}/publication.{1}".format(base, content_type)
 
         return self._perform_request("post", resource)
 
@@ -166,6 +165,7 @@ class Socrata(object):
         '''
         Read data from the requested resource. Options for content_type are json,
         csv, and xml. Optionally, specify a keyword arg to filter results:
+
             select : the set of columns to be returned, defaults to *
             where : filters the rows to be returned, defaults to limit
             order : specifies the order of results
@@ -177,6 +177,7 @@ class Socrata(object):
             exclude_system_fields : defaults to true. If set to false, the
                 response will include system fields (:id, :created_at, and
                 :updated_at)
+
         More information about the SoQL parameters can be found at the official
         docs:
             http://dev.socrata.com/docs/queries.html
@@ -184,7 +185,7 @@ class Socrata(object):
         More information about system fields can be found here:
             http://dev.socrata.com/docs/system-fields.html
         '''
-        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
+        resource = _format_new_api_request(dataid=dataset_identifier, content_type=content_type)
         headers = _clear_empty_values({"Accept": kwargs.pop("format", None)})
 
         # SoQL parameters
@@ -216,7 +217,7 @@ class Socrata(object):
         documentation:
             http://dev.socrata.com/publishers/upsert.html
         '''
-        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
+        resource = _format_new_api_request(dataid=dataset_identifier, content_type=content_type)
 
         return self._perform_update("post", resource, payload)
 
@@ -225,7 +226,7 @@ class Socrata(object):
         Same logic as upsert, but overwrites existing data with the payload
         using PUT instead of POST.
         '''
-        resource = "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataset_identifier, content_type)
+        resource = _format_new_api_request(dataid=dataset_identifier, content_type=content_type)
 
         return self._perform_update("put", resource, payload)
 
@@ -252,8 +253,7 @@ class Socrata(object):
         WARNING: a table-based dataset cannot be replaced by a file-based dataset.
                  Use create_non_data_file in order to replace.
         '''
-        api_prefix = '/api/views/'
-        resource = "{0}{1}.{2}".format(api_prefix, dataset_identifier, "txt")
+        resource = _format_old_api_request(dataid=dataset_identifier, content_type="txt")
 
         if not params.get('method', None):
             params['method'] = 'replaceBlob'
@@ -289,10 +289,10 @@ class Socrata(object):
             client.delete("nimj-3ivp", row_id=4)
         '''
         if row_id:
-            resource = "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataset_identifier, row_id,
-                                               content_type)
+            resource = _format_new_api_request(dataid=dataset_identifier, rowid=row_id,
+                                               content_type=content_type)
         else:
-            resource = "/api/views/{0}.{1}".format(dataset_identifier, content_type)
+            resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
 
         return self._perform_request("delete", resource)
 
@@ -380,6 +380,31 @@ def _clear_empty_values(args):
         if args[param] is not None:
             result[param] = args[param]
     return result
+
+def _format_old_api_request(dataid=None, content_type=None):
+
+    if dataid is not None:
+        if content_type is not None:
+            return "{0}/{1}.{2}".format(OLD_API_PREFIX, dataid, content_type)
+        else:
+            return "{0}/{1}".format(OLD_API_PREFIX, dataid)
+    else:
+        if content_type is not None:
+            return "{0}.{1}".format(OLD_API_PREFIX, content_type)
+        else:
+            raise Exception("This method requires at least a dataset_id or content_type.")
+
+
+def _format_new_api_request(dataid=None, row_id=None, content_type=None):
+    if dataid is not None:
+        if content_type is not None:
+            if row_id is not None:
+                return "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataid, rowid, content_type)
+            else:
+                return "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataid, content_type)
+
+    raise Exception("This method requires at least a dataset_id or content_type.")
+
 
 def authentication_validation(username, password, access_token):
     '''
