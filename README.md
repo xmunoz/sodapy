@@ -23,6 +23,7 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 - [client](#client)
 - [`get`](#getdataset_identifier-content_typejson-kwargs)
 - [`get_metadata`](#get_metadatadataset_identifier-content_typejson)
+- [`update_metadata`](#update_metadatadataset_identifier-update_fields-content_typejson)
 - [`download_attachments`](#download_attachmentsdataset_identifier-content_typejson-download_dirsodapy_downloads)
 - [`create`](#createname-kwargs)
 - [`publish`](#publishdataset_identifier-content_typejson)
@@ -67,6 +68,15 @@ Retrieve the metadata associated with a particular dataset.
 
     >>> client.get_metadata("nimj-3ivp")
     {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "http://foo.bar.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
+
+### update_metadata(dataset_identifier, update_fields, content_type="json")
+
+Update the metadata for a particular dataset. `update_fields` should be a dictionary containing only the metadata keys that you wish to overwrite.
+
+Note: Invalid payloads to this method could corrupt the dataset or visualization. See [this comment](https://github.com/xmunoz/sodapy/issues/22#issuecomment-249971379) for more information.
+
+    >>> client.update_metadata("nimj-3ivp", {"attributionLink": "https://anothertest.com"})
+    {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "https://anothertest.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}
 
 ### download_attachments(dataset_identifier, content_type="json", download_dir="~/sodapy_downloads")
 
@@ -159,7 +169,7 @@ files = (
 Same as create_non_data_file, but replaces a file that already exists in a
 file-based dataset.  
 
-WARNING: a table-based dataset cannot be replaced by a file-based dataset. Use create_non_data_file in order to replace.
+Note: a table-based dataset cannot be replaced by a file-based dataset. Use create_non_data_file in order to replace.
 
     >>>  with open(nondatafile_path, 'rb') as f:
     >>>      files = (

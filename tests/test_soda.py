@@ -57,6 +57,25 @@ def test_get_metadata():
 
     client.close()
 
+def test_update_metadata():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
+
+    response_data = "update_song_metadata.txt"
+    setup_old_api_mock(adapter, "PUT", response_data, 200)
+    data = {"category": "Education", "attributionLink": "https://testing.updates"}
+
+    response = client.update_metadata(DATASET_IDENTIFIER, data)
+
+    assert isinstance(response, dict)
+    assert response.get("category") == data["category"]
+    assert response.get("attributionLink") == data["attributionLink"]
+
+    client.close()
+
 def test_upsert_exception():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
