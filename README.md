@@ -71,9 +71,9 @@ Retrieve the metadata associated with a particular dataset.
 
 ### update_metadata(dataset_identifier, update_fields, content_type="json")
 
-Update the metadata for a particular dataset. `update_fields` should be a dictionary containing the the metadata keys that you wish to overwrite.
+Update the metadata for a particular dataset. `update_fields` should be a dictionary containing only the metadata keys that you wish to overwrite.
 
-Note: Invalid payloads to this method could corrupt the dataset or visualization.
+Note: Invalid payloads to this method could corrupt the dataset or visualization. See [this comment](https://github.com/xmunoz/sodapy/issues/22#issuecomment-249971379) for more information.
 
     >>> client.update_metadata("nimj-3ivp", {"attributionLink": "https://anothertest.com"})
     {"newBackend": false, "licenseId": "CC0_10", "publicationDate": 1436655117, "viewLastModified": 1451289003, "owner": {"roleName": "administrator", "rights": [], "displayName": "Brett", "id": "cdqe-xcn5", "screenName": "Brett"}, "query": {}, "id": "songs", "createdAt": 1398014181, "category": "Public Safety", "publicationAppendEnabled": true, "publicationStage": "published", "rowsUpdatedBy": "cdqe-xcn5", "publicationGroup": 1552205, "displayType": "table", "state": "normal", "attributionLink": "https://anothertest.com", "tableId": 3523378, "columns": [], "metadata": {"rdfSubject": "0", "renderTypeConfig": {"visible": {"table": true}}, "availableDisplayTypes": ["table", "fatrow", "page"], "attachments": ... }}

@@ -108,11 +108,13 @@ update\_metadata(dataset\_identifier, update\_fields, content\_type="json")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Update the metadata for a particular dataset. ``update_fields`` should
-be a dictionary containing the the metadata keys that you wish to
+be a dictionary containing only the metadata keys that you wish to
 overwrite.
 
 Note: Invalid payloads to this method could corrupt the dataset or
-visualization.
+visualization. See `this
+comment <https://github.com/xmunoz/sodapy/issues/22#issuecomment-249971379>`__
+for more information.
 
 ::
 
