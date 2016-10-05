@@ -40,6 +40,26 @@ def test_get():
 
     client.close()
 
+def test_get_unicode():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
+
+    response_data = "get_songs_unicode.txt"
+    setup_mock(adapter, "GET", response_data, 200)
+
+    response = client.get(DATASET_IDENTIFIER)
+
+    assert isinstance(response, list)
+    assert len(response) == 10
+
+    client.close()
+
+def test_perform_request():
+    pass
+
 def test_get_metadata():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
