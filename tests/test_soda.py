@@ -40,6 +40,7 @@ def test_get():
 
     client.close()
 
+
 def test_get_unicode():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
@@ -57,6 +58,7 @@ def test_get_unicode():
 
     client.close()
 
+
 def test_get_metadata():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
@@ -73,6 +75,7 @@ def test_get_metadata():
     assert "attachments" in response["metadata"]
 
     client.close()
+
 
 def test_update_metadata():
     mock_adapter = {}
@@ -92,6 +95,7 @@ def test_update_metadata():
     assert response.get("attributionLink") == data["attributionLink"]
 
     client.close()
+
 
 def test_upsert_exception():
     mock_adapter = {}
@@ -175,6 +179,7 @@ def test_delete():
     finally:
         client.close()
 
+
 def test_create():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
@@ -192,10 +197,10 @@ def test_create():
     ]
     tags = ["foo", "bar"]
     response = client.create("Foo Bar", description="test dataset",
-        columns=columns, tags=tags, row_identifier="bar")
+                             columns=columns, tags=tags, row_identifier="bar")
 
     request = adapter.request_history[0]
-    request_payload = json.loads(request.text) # can't figure out how to use .json
+    request_payload = json.loads(request.text)  # can't figure out how to use .json
 
     # Test request payload
     for dataset_key in ["name", "description", "columns", "tags"]:
@@ -208,6 +213,7 @@ def test_create():
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
     client.close()
+
 
 def test_set_permission():
     mock_adapter = {}
@@ -235,6 +241,7 @@ def test_set_permission():
 
     client.close()
 
+
 def test_publish():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
@@ -250,6 +257,7 @@ def test_publish():
     assert isinstance(response, dict)
     assert len(response.get("id")) == 9
     client.close()
+
 
 def test_import_non_data_file():
     mock_adapter = {}
@@ -299,9 +307,8 @@ def test_replace_non_data_file():
     client.close()
 
 
-
 def setup_publish_mock(adapter, method, response, response_code, reason="OK",
-                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+                       dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -317,8 +324,9 @@ def setup_publish_mock(adapter, method, response, response_code, reason="OK",
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
+
 def setup_import_non_data_file(adapter, method, response, response_code, reason="OK",
-                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+                               dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -333,8 +341,9 @@ def setup_import_non_data_file(adapter, method, response, response_code, reason=
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
+
 def setup_replace_non_data_file(adapter, method, response, response_code, reason="OK",
-                        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+                                dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -350,8 +359,9 @@ def setup_replace_non_data_file(adapter, method, response, response_code, reason
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
+
 def setup_old_api_mock(adapter, method, response, response_code, reason="OK",
-        dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+                       dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -370,8 +380,9 @@ def setup_old_api_mock(adapter, method, response, response_code, reason="OK",
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
+
 def setup_mock(adapter, method, response, response_code, reason="OK",
-                dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
+               dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
 
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -379,7 +390,7 @@ def setup_mock(adapter, method, response, response_code, reason="OK",
 
     if dataset_identifier is None:  # for create endpoint
         uri = "{0}{1}{2}.{3}".format(PREFIX, DOMAIN, OLD_API_PREFIX, "json")
-    else: # most cases
+    else:  # most cases
         uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, dataset_identifier,
                                         content_type)
 

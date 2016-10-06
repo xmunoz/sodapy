@@ -1,16 +1,18 @@
 from __future__ import print_function, absolute_import
 from future import standard_library
+
 standard_library.install_aliases()
+
 from builtins import object
-
-from .constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
-
-import requests
 from io import StringIO
+import requests
 import csv
 import json
 import re
 import os
+
+from .constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
+
 
 class Socrata(object):
     '''
@@ -154,7 +156,8 @@ class Socrata(object):
         for attachment in attachments:
             file_path = os.path.join(download_dir, attachment["filename"])
             base = _format_old_api_request(dataid=dataset_identifier)
-            resource = "{0}/files/{1}?download=true&filename={2}".format(base, attachment["assetId"],
+            resource = "{0}/files/{1}?download=true&filename={2}".format(base,
+                                                                         attachment["assetId"],
                                                                          attachment["filename"])
             uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
             _download_file(uri, file_path)
@@ -258,8 +261,8 @@ class Socrata(object):
 
     def replace_non_data_file(self, dataset_identifier, params, file_data):
         '''
-        Same as create_non_data_file, but replaces a file that already exists in a 
-        file-based dataset.  
+        Same as create_non_data_file, but replaces a file that already exists in a
+        file-based dataset.
 
         WARNING: a table-based dataset cannot be replaced by a file-based dataset.
                  Use create_non_data_file in order to replace.
@@ -303,7 +306,8 @@ class Socrata(object):
             resource = _format_new_api_request(dataid=dataset_identifier, rowid=row_id,
                                                content_type=content_type)
         else:
-            resource = _format_old_api_request(dataid=dataset_identifier, content_type=content_type)
+            resource = _format_old_api_request(dataid=dataset_identifier,
+                                               content_type=content_type)
 
         return self._perform_request("delete", resource)
 
@@ -392,6 +396,7 @@ def _clear_empty_values(args):
             result[param] = args[param]
     return result
 
+
 def _format_old_api_request(dataid=None, content_type=None):
 
     if dataid is not None:
@@ -410,7 +415,7 @@ def _format_new_api_request(dataid=None, row_id=None, content_type=None):
     if dataid is not None:
         if content_type is not None:
             if row_id is not None:
-                return "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataid, rowid, content_type)
+                return "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataid, row_id, content_type)
             else:
                 return "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataid, content_type)
 
@@ -429,6 +434,7 @@ def authentication_validation(username, password, access_token):
                         " OAuth2.0. Please use only one authentication"
                         " method.")
 
+
 def _download_file(url, local_filename):
     '''
     Utility function that downloads a chunked response from the specified url to a local path.
@@ -437,6 +443,5 @@ def _download_file(url, local_filename):
     response = requests.get(url, stream=True)
     with open(local_filename, 'wb') as outfile:
         for chunk in response.iter_content(chunk_size=1024):
-            if chunk: # filter out keep-alive new chunks
+            if chunk:  # filter out keep-alive new chunks
                 outfile.write(chunk)
-
