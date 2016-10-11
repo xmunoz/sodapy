@@ -146,6 +146,10 @@ class Socrata(object):
         Download all of the attachments associated with a dataset.
         '''
         metadata = self.get_metadata(dataset_identifier, content_type=content_type)
+        if "attachments" not in metadata['metadata']:
+            print("No attachments were found or downloaded.")
+            return
+
         attachments = metadata['metadata']['attachments']
         files = []
 
