@@ -159,10 +159,18 @@ class Socrata(object):
 
         for attachment in attachments:
             file_path = os.path.join(download_dir, attachment["filename"])
-            base = _format_old_api_request(dataid=dataset_identifier)
-            resource = "{0}/files/{1}?download=true&filename={2}".format(base,
-                                                                         attachment["assetId"],
+            has_assetid = attachment.get("assetId", False)
+            if has_assetid:
+                base = _format_old_api_request(dataid=dataset_identifier)
+                assetid = attachment["assetId"]
+                resource = "{0}/files/{1}?download=true&filename={2}".format(base,
+                                                                         assetid,
                                                                          attachment["filename"])
+            else:
+                base = "/api/assets"
+                assetid = attachment["blobId"]
+                resource = "{0}/{1}?download=true".format(base, assetid)
+
             uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
             _download_file(uri, file_path)
             files.append(file_path)
