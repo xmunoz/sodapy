@@ -59,7 +59,7 @@ def test_get_unicode():
     client.close()
 
 
-def test_get_metadata():
+def test_get_metadata_and_attachments():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
@@ -73,6 +73,11 @@ def test_get_metadata():
     assert isinstance(response, dict)
     assert "newBackend" in response
     assert "attachments" in response["metadata"]
+
+    response = client.download_attachments(DATASET_IDENTIFIER)
+
+    assert isinstance(response, list)
+    assert len(response) == 0
 
     client.close()
 
