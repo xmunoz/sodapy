@@ -1,4 +1,4 @@
-from __future__ import print_function, absolute_import
+from __future__ import absolute_import
 from future import standard_library
 
 standard_library.install_aliases()
@@ -8,6 +8,7 @@ from io import StringIO
 import requests
 import csv
 import json
+import logging
 import re
 import os
 
@@ -52,8 +53,8 @@ class Socrata(object):
         # set up the session with proper authentication crendentials
         self.session = requests.Session()
         if not app_token:
-            print ("Warning: requests made without an app_token will be"
-                   " subject to strict throttling limits.")
+            logging.warning("Requests made without an app_token will be"
+                            " subject to strict throttling limits.")
         else:
             self.session.headers.update({"X-App-token": app_token})
 
@@ -143,15 +144,15 @@ class Socrata(object):
     def download_attachments(self, dataset_identifier, content_type="json",
                              download_dir="~/sodapy_downloads"):
         '''
-        Download all of the attachments associated with a dataset.
+        Download all of the attachments associated with a dataset. Return the paths of downloaded
+        files.
         '''
         metadata = self.get_metadata(dataset_identifier, content_type=content_type)
-        if "attachments" not in metadata['metadata']:
-            print("No attachments were found or downloaded.")
-            return
-
-        attachments = metadata['metadata']['attachments']
         files = []
+        attachments = metadata['metadata'].get("attachments")
+        if not attachments:
+            logging.info("No attachments were found or downloaded.")
+            return files
 
         download_dir = os.path.join(os.path.expanduser(download_dir), dataset_identifier)
         if not os.path.exists(download_dir):
@@ -167,7 +168,8 @@ class Socrata(object):
             _download_file(uri, file_path)
             files.append(file_path)
 
-        print("The following files were downloaded:\n\t{0}".format("\n\t".join(files)))
+        logging.info("The following files were downloaded:\n\t{0}".format("\n\t".join(files)))
+        return files
 
     def publish(self, dataset_identifier, content_type="json"):
         '''
