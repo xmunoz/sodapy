@@ -1,7 +1,7 @@
 # Contributing
 
-This project adheres to the [Open Code of Conduct][code-of-conduct]. By participating, you are expected to honor this code.
-[code-of-conduct]: http://todogroup.org/opencodeofconduct/#sodapy/hi@xmunoz.com
+This project adheres to the [Contributor Covenant Code of Conduct][code-of-conduct]. By participating, you are expected to honor this code.
+[code-of-conduct]: http://contributor-covenant.org/version/1/4/
 
 ## Getting started
 
@@ -19,12 +19,14 @@ Run tests to confirm that everything is set up properly.
 
 ## Submitting a pull request
 
-1. Fork this repository.
-2. Create a branch `git checkout -b my_feature`.
-3. Commit your changes `git commit -am "Great new feature that closes #3"`. Reference any related issues in the first line of the commit message.
-4. Push to remote `git push origin my_feature`.
-5. Open a pull request.
-6. Pat yourself on the back for making an open source contribution :) 
+1. Fork this repository
+2. Create a branch: `git checkout -b my_feature`
+3. Make changes
+4. Install and run `flake8 sodapy/`to ensure that your changes conform to the coding style of this project
+5. Commit: `git commit -am "Great new feature that closes #3"`. Reference any related issues in the first line of the commit message.
+6. Push: `git push origin my_feature`
+7. Open a pull request
+8. Pat yourself on the back for making an open source contribution :)
 
 ## Other considerations
 
