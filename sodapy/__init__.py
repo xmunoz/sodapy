@@ -4,7 +4,7 @@ from future import standard_library
 standard_library.install_aliases()
 
 from builtins import object
-from io import StringIO
+from io import StringIO, IOBase
 import requests
 import csv
 import json
@@ -289,7 +289,7 @@ class Socrata(object):
         if isinstance(payload, (dict, list)):
             response = self._perform_request(method, resource,
                                              data=json.dumps(payload))
-        elif isinstance(payload, file):
+        elif isinstance(payload, IOBase):
             headers = {
                 "content-type": "text/csv",
             }
