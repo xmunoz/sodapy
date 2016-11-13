@@ -80,12 +80,10 @@ Note: Invalid payloads to this method could corrupt the dataset or visualization
 
 ### download_attachments(dataset_identifier, content_type="json", download_dir="~/sodapy_downloads")
 
-Download all attachments associated with a dataset.
+Download all attachments associated with a dataset. Return a list of paths to the downloaded files.
 
     >>> client.download_attachments("nimj-3ivp", download_dir="~/Desktop")
-    The following files were downloaded:
-        /Users/xmunoz/Desktop/nimj-3ivp/FireIncident_Codes.PDF
-        /Users/xmunoz/Desktop/nimj-3ivp/AccidentReport.jpg
+        ['/Users/xmunoz/Desktop/nimj-3ivp/FireIncident_Codes.PDF', '/Users/xmunoz/Desktop/nimj-3ivp/AccidentReport.jpg']
 
 ### create(name, **kwargs)
 

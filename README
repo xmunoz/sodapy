@@ -20,8 +20,7 @@ At its core, this library depends heavily on the
 `Requests <http://docs.python-requests.org/en/latest/>`__ package. All
 other requirements can be found in
 `requirements.txt <https://github.com/xmunoz/sodapy/blob/master/requirements.txt>`__.
-``sodapy`` is currently compatible with Python 2.6, 2.7, 3.3, 3.4 and
-3.5.
+``sodapy`` is currently compatible with Python 2.7, 3.3, 3.4 and 3.5.
 
 Documentation
 -------------
@@ -124,14 +123,13 @@ for more information.
 download\_attachments(dataset\_identifier, content\_type="json", download\_dir="~/sodapy\_downloads")
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Download all attachments associated with a dataset.
+Download all attachments associated with a dataset. Return a list of
+paths to the downloaded files.
 
 ::
 
     >>> client.download_attachments("nimj-3ivp", download_dir="~/Desktop")
-    The following files were downloaded:
-        /Users/xmunoz/Desktop/nimj-3ivp/FireIncident_Codes.PDF
-        /Users/xmunoz/Desktop/nimj-3ivp/AccidentReport.jpg
+        ['/Users/xmunoz/Desktop/nimj-3ivp/FireIncident_Codes.PDF', '/Users/xmunoz/Desktop/nimj-3ivp/AccidentReport.jpg']
 
 create(name, \*\*kwargs)
 ~~~~~~~~~~~~~~~~~~~~~~~~
