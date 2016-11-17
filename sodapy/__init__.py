@@ -164,9 +164,8 @@ class Socrata(object):
             if has_assetid:
                 base = _format_old_api_request(dataid=dataset_identifier)
                 assetid = attachment["assetId"]
-                resource = "{0}/files/{1}?download=true&filename={2}".format(base,
-                                                                         assetid,
-                                                                         attachment["filename"])
+                resource = "{0}/files/{1}?download=true&filename={2}"\
+                           .format(base, assetid, attachment["filename"])
             else:
                 base = "/api/assets"
                 assetid = attachment["blobId"]
