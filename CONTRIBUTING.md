@@ -11,7 +11,7 @@ The best way to start developing this project is to set up a virtualenv and inst
     cd sodapy
     virtualenv venv_sodapy
     source venv_sodapy/bin/activate
-    pip install -r requirements.txt
+    pip install -r requirements-dev.txt
 
 Run tests to confirm that everything is set up properly.
 
