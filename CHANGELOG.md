@@ -1,6 +1,10 @@
 sodapy changes by release
 ==========================
 
+## 1.4.2
+
+* Bugfix: More flexible regex matching for response content-type.
+
 ## 1.4.1
 
 * Separate requirements and dev requirements
