@@ -1,6 +1,10 @@
 sodapy changes by release
 ==========================
 
+## 1.4.3
+
+* Universal wheels distribution
+
 ## 1.4.2
 
 * Bugfix: More flexible regex matching for response content-type.
