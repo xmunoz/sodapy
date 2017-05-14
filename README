@@ -269,7 +269,7 @@ Delete the entire dataset.
 close()
 ~~~~~~~
 
-Close the seesion when you're finished.
+Close the session when you're finished.
 
 ::
 
