@@ -46,6 +46,11 @@ Import the library and set up a connection to get started.
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
+Since we currently do not have a username, password, or APIToken we will
+initialize the Socrata client with the following.
+
+    >>> client = Socrata("sandbox.demo.socrata.com", "")
+
 ### get(dataset_identifier, content_type="json", **kwargs)
 
 Retrieve data from the requested resources. Filter and query data by field name, id, or using [SoQL keywords](https://dev.socrata.com/docs/queries/).
