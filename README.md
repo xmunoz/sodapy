@@ -46,6 +46,8 @@ Import the library and set up a connection to get started.
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
+The client by default makes requests over https. To modify this behavior or make requests through a proxy, take a look [here](https://github.com/xmun0x/sodapy/issues/31#issuecomment-302176628).
+
 ### get(dataset_identifier, content_type="json", **kwargs)
 
 Retrieve data from the requested resources. Filter and query data by field name, id, or using [SoQL keywords](https://dev.socrata.com/docs/queries/).
