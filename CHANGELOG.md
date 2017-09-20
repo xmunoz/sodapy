@@ -1,6 +1,10 @@
 sodapy changes by release
 ==========================
 
+## 1.4.4
+
+* Bugfix: Upsert with csv now working with python2 and 3.
+
 ## 1.4.3
 
 * Universal wheels distribution
