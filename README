@@ -65,12 +65,16 @@ Import the library and set up a connection to get started.
 ``username`` and ``password`` are only required for creating or
 modifying data. An application token isn't strictly required (can be
 ``None``), but queries executed from a client without an application
-token will be sujected to strict throttling limits. To create a
+token will be subjected to strict throttling limits. To create a
 bare-bones client:
 
 ::
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
+
+The client by default makes requests over https. To modify this behavior
+or make requests through a proxy, take a look
+`here <https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628>`__.
 
 get(dataset\_identifier, content\_type="json", \*\*kwargs)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

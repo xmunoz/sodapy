@@ -1,4 +1,4 @@
-[![PyPI version](https://badge.fury.io/py/sodapy.svg)](http://badge.fury.io/py/sodapy) [![Build Status](https://travis-ci.org/xmun0x/sodapy.svg?branch=master)](https://travis-ci.org/xmun0x/sodapy)
+[![PyPI version](https://badge.fury.io/py/sodapy.svg)](http://badge.fury.io/py/sodapy) [![Build Status](https://travis-ci.org/xmunoz/sodapy.svg?branch=master)](https://travis-ci.org/xmunoz/sodapy)
 
 # sodapy
 Python bindings for the Socrata Open Data API
@@ -46,7 +46,7 @@ Import the library and set up a connection to get started.
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
-The client by default makes requests over https. To modify this behavior or make requests through a proxy, take a look [here](https://github.com/xmun0x/sodapy/issues/31#issuecomment-302176628).
+The client by default makes requests over https. To modify this behavior or make requests through a proxy, take a look [here](https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628).
 
 ### get(dataset_identifier, content_type="json", **kwargs)
 
@@ -192,7 +192,7 @@ Delete the entire dataset.
 
 ### close()
 
-Close the seesion when you're finished.
+Close the session when you're finished.
 
 	>>> client.close()
 
