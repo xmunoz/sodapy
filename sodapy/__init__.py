@@ -323,7 +323,7 @@ class Socrata(object):
             client.delete("nimj-3ivp", row_id=4)
         '''
         if row_id:
-            resource = _format_new_api_request(dataid=dataset_identifier, rowid=row_id,
+            resource = _format_new_api_request(dataid=dataset_identifier, row_id=row_id,
                                                content_type=content_type)
         else:
             resource = _format_old_api_request(dataid=dataset_identifier,
