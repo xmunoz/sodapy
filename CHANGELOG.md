@@ -1,5 +1,8 @@
 sodapy changes by release
 ==========================
+## 1.4.5
+
+* Bugfix: Spelling fix `rowid` -> `row_id`
 
 ## 1.4.4
 
