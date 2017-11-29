@@ -11,4 +11,4 @@ install:
 before_script:
   - "flake8 sodapy/"
   - "flake8 tests/"
-script: ./runtests tests/ 
+script: pytest
