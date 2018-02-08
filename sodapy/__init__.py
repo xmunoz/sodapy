@@ -48,12 +48,15 @@ class Socrata(object):
         '''
         if not domain:
             raise Exception("A domain is required.")
-        core_url = re.compile('^(http:\/\/){0,1}(https:\/\/){0,1}([\w|\.]+)\/{0,1}.*?$')
+        core_url = re.compile("^(http:\/\/){0,1}(https:\/\/){0,1}"
+                              "([\w|\.]+)"
+                              "\/{0,1}.*?$")
         try:
             self.domain = re.search(core_url, domain)[3]
         except IndexError:
-            raise Exception("domain should not contain slashes, and should look something like 'opendata.socrata.com'")
-
+            raise Exception("domain should not contain slashes,"
+                            "and should look something like"
+                            "'opendata.socrata.com'")
 
         # set up the session with proper authentication crendentials
         self.session = requests.Session()
