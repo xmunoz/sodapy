@@ -48,7 +48,7 @@ class Socrata(object):
         '''
         if not domain:
             raise Exception("A domain is required.")
-        self.domain = domain
+        self.domain = re.sub(r'http[s]+[:\/\/]+', '', domain)
 
         # set up the session with proper authentication crendentials
         self.session = requests.Session()
