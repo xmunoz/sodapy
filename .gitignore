@@ -42,3 +42,4 @@ nosetests.xml
 
 # vim
 *.swp
+examples/.ipynb_checkpoints/*
