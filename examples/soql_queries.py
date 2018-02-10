@@ -7,7 +7,7 @@
 
 # ## Setup
 
-# In[3]:
+# In[1]:
 
 
 import os
@@ -23,7 +23,7 @@ from sodapy import Socrata
 # 
 # `https://opendata.socrata.com/dataset/Santa-Fe-Contributors/f92i-ik66.json`
 
-# In[7]:
+# In[2]:
 
 
 socrata_domain = 'opendata.socrata.com'
@@ -37,7 +37,7 @@ except:
     socrata_token = None
 
 
-# In[8]:
+# In[3]:
 
 
 client = Socrata(socrata_domain, socrata_token)
@@ -47,14 +47,14 @@ client = Socrata(socrata_domain, socrata_token)
 # You've probably looked through the column names and descriptions in the web UI, 
 # but it can be nice to have them right in your workspace as well.
 
-# In[9]:
+# In[4]:
 
 
 metadata = client.get_metadata(socrata_dataset_identifier)
 [x['name'] for x in metadata['columns']]
 
 
-# In[11]:
+# In[5]:
 
 
 meta_amount = [x for x in metadata['columns'] if x['name'] == 'AMOUNT'][0]
@@ -65,14 +65,14 @@ meta_amount
 
 # ### Restrict rows to above-average donations
 
-# In[14]:
+# In[6]:
 
 
 # Get the average from the metadata. Note that it's a string by default
 meta_amount['cachedContents']['average']
 
 
-# In[17]:
+# In[7]:
 
 
 # Use the 'where' argument to filter the data before downloading it
@@ -88,7 +88,7 @@ results[:3]
 # It can also be valuable to have results in order, so that you can quickly grab the 
 # largest or smallest.
 
-# In[19]:
+# In[8]:
 
 
 results = client.get(socrata_dataset_identifier, 
@@ -104,7 +104,7 @@ results[:3]
 # If you're planning on doing further processing, note that the numeric outputs 
 # are strings by default
 
-# In[20]:
+# In[9]:
 
 
 results = client.get(socrata_dataset_identifier, 
@@ -120,14 +120,14 @@ results
 # By default, all queries have a limit of 1000 rows, but you can manually set it 
 # higher or lower. If you want to loop through results, just use `offset`
 
-# In[26]:
+# In[10]:
 
 
 results = client.get(socrata_dataset_identifier, limit=6, select="name, amount")
 results
 
 
-# In[30]:
+# In[11]:
 
 
 loop_size = 3
@@ -145,23 +145,12 @@ for i in range(num_loops):
         print(result)
 
 
-# ### Free text search
-# This will be more valuable in datasets with many string columns, since we're talking about
-# politics, it seems reasonable to see whether Washington shows up anywhere
-
-# In[39]:
-
-
-results = client.get(socrata_dataset_identifier, q="Washington")
-results[0]
-
-
 # ### Query strings
 # All of the queries above were made with method parameters, 
 # but you could also pass all the parameters at once in a 
 # SQL-like format
 
-# In[40]:
+# In[13]:
 
 
 query = """
@@ -176,6 +165,23 @@ limit
 """
 
 results = client.get(socrata_dataset_identifier, query=query)
+results
+
+
+# ### Free text search
+# My brother just got a dog named Slider, so we were curious about how many other dogs had that name. Searches with `q` match anywhere in the row, which allows you to quickly search through
+# data with several free text columns of interest.
+
+# In[19]:
+
+
+nyc_dogs_domain = 'data.cityofnewyork.us'
+nyc_dogs_dataset_identifier = 'nu7n-tubp'
+
+nyc_dogs_client = Socrata(nyc_dogs_domain, socrata_token)
+results = nyc_dogs_client.get(nyc_dogs_dataset_identifier, 
+                              q="Slider", 
+                              select="animalname, breedname")
 results
 
 
