@@ -1,5 +1,6 @@
 from sodapy import Socrata
 from sodapy.constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
+import pytest
 import requests
 import requests_mock
 
@@ -22,6 +23,29 @@ def test_client():
     client = Socrata(DOMAIN, APPTOKEN)
     assert isinstance(client, Socrata)
     client.close()
+
+
+def test_context_manager():
+    with Socrata(DOMAIN, APPTOKEN) as client:
+        assert isinstance(client, Socrata)
+
+
+def test_context_manager_no_domain_exception():
+    with pytest.raises(Exception):
+        with Socrata(None, APPTOKEN):
+            pass
+
+
+def test_context_manager_timeout_exception():
+    with pytest.raises(TypeError):
+        with Socrata(DOMAIN, APPTOKEN, timeout='fail'):
+            pass
+
+
+def test_context_manager_exception_propagation():
+    with pytest.raises(ZeroDivisionError):
+        with Socrata(DOMAIN, APPTOKEN):
+            1 / 0
 
 
 def test_get():

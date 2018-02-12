@@ -79,6 +79,21 @@ class Socrata(object):
             raise TypeError("Timeout must be numeric.")
         self.timeout = timeout
 
+    def __enter__(self):
+        '''
+        This runs as the with block is set up.
+        '''
+        return self
+
+    def __exit__(self, exc_type=None, exc_value=None, traceback=None):
+        '''
+        This runs at the end of a with block. It simply closes the client.
+
+        Exceptions are propagated forward in the program as usual, and
+            are not handled here.
+        '''
+        self.close()
+
     def create(self, name, **kwargs):
         '''
         Create a dataset, including the field types. Optionally, specify args such as:
