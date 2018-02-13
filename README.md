@@ -16,7 +16,9 @@ At its core, this library depends heavily on the [Requests](http://docs.python-r
 
 The [official Socrata API docs](http://dev.socrata.com/) provide thorough documentation of the available methods, as well as other client libraries. A quick list of eligible domains to use with the API is available [here](https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija).
 
-There is also an ipython notebook available [here](examples/basic_queries.ipynb).
+## Examples
+
+There are some [jupyter](https://jupyter.org/) notebooks in the [examples directory](examples) with usages examples of sodapy in action.
 
 ## Interface
 
@@ -201,10 +203,6 @@ Close the session when you're finished.
 ## Run tests
 
     $ ./runtests tests/
-
-## Examples
-
-Examples of the sodapy library in use are available in the [examples](https://github.com/xmunoz/sodapy/tree/master/examples) directory.
 
 ## Contributing
 
