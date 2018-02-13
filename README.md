@@ -202,6 +202,10 @@ Close the session when you're finished.
 
     $ ./runtests tests/
 
+## Examples
+
+Examples of the sodapy library in use are available in the [examples](https://github.com/xmunoz/sodapy/tree/master/examples) directory.
+
 ## Contributing
 
 See [CONTRIBUTING.md](https://github.com/xmunoz/sodapy/blob/master/CONTRIBUTING.md).
