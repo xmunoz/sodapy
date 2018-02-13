@@ -50,7 +50,12 @@ Import the library and set up a connection to get started.
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
-The client by default makes requests over https. To modify this behavior or make requests through a proxy, take a look [here](https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628).
+A client can also be created with a context manager to obviate the need for teardown:
+
+    >>> with Socrata("sandbox.demo.socrata.com", None) as client:
+    >>>    # do some stuff
+
+The client, by default, makes requests over HTTPS. To modify this behavior, or to make requests through a proxy, take a look [here](https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628).
 
 ### get(dataset_identifier, content_type="json", **kwargs)
 
