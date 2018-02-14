@@ -1,5 +1,11 @@
 sodapy changes by release
 ==========================
+## 1.4.6
+
+* Feature: Use Socrata client with a context manager
+* Feature: Jupyter notebooks with usage examples
+* Feature: Support Python 3.6
+
 ## 1.4.5
 
 * Bugfix: Spelling fix `rowid` -> `row_id`

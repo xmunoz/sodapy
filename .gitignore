@@ -6,6 +6,7 @@ venv*
 
 # cache
 .cache
+.pytest_cache
 
 # C extensions
 *.so
@@ -42,4 +43,6 @@ nosetests.xml
 
 # vim
 *.swp
-examples/.ipynb_checkpoints/*
+
+# jupyter notebook
+examples/.ipynb_checkpoints

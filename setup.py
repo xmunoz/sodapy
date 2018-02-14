@@ -19,7 +19,7 @@ kwargs = {
     "name": "sodapy",
     "version": str(__version__),
     "packages": ["sodapy"],
-    "description": "Python bindings for the Socrata Open Data API",
+    "description": "Python library for the Socrata Open Data API",
     "long_description": long_description,
     "author": "Cristina Muñoz",
     "maintainer": "Cristina Muñoz",

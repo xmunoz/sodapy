@@ -2,8 +2,8 @@
 # coding: utf-8
 
 # # Example 02: SoSQL Queries
-# 
-# This notebook discusses how to make more specific data requests, conserving your bandwith and  computational resources
+#
+# Constructing custom queries to conserve bandwith and computational resources
 
 # ## Setup
 
@@ -11,16 +11,16 @@
 
 
 import os
-# Note that we don't need Pandas. 
+# Note: we don't need Pandas
 # Filters allow you to accomplish many basic operations automatically
 
 from sodapy import Socrata
 
 
 # ## Find Some Data
-# 
-# As in the first example, I'm using the Santa Fe political contribution dataset
-# 
+#
+# As in the first example, I'm using the Santa Fe political contribution dataset.
+#
 # `https://opendata.socrata.com/dataset/Santa-Fe-Contributors/f92i-ik66.json`
 
 # In[2]:
@@ -31,10 +31,7 @@ socrata_dataset_identifier = 'f92i-ik66'
 
 # If you choose to use a token, run the following command on the terminal (or add it to your .bashrc)
 # $ export SODAPY_APPTOKEN=<token>
-try:
-    socrata_token = os.environ['SODAPY_APPTOKEN']
-except:
-    socrata_token = None
+socrata_token = os.environ.get("SODAPY_APPTOKEN")
 
 
 # In[3]:
@@ -44,7 +41,7 @@ client = Socrata(socrata_domain, socrata_token)
 
 
 # ## Use Metadata to Plan Your Query
-# You've probably looked through the column names and descriptions in the web UI, 
+# You've probably looked through the column names and descriptions in the web UI,
 # but it can be nice to have them right in your workspace as well.
 
 # In[4]:
@@ -84,43 +81,43 @@ results[:3]
 
 # ### Restrict columns and order rows
 # Often, you know which columns you want, so you can further simplify the download.
-# 
-# It can also be valuable to have results in order, so that you can quickly grab the 
+#
+# It can also be valuable to have results in order, so that you can quickly grab the
 # largest or smallest.
 
 # In[8]:
 
 
-results = client.get(socrata_dataset_identifier, 
-                     where="amount < 2433", 
+results = client.get(socrata_dataset_identifier,
+                     where="amount < 2433",
                      select="amount, job",
                      order="amount ASC")
 results[:3]
 
 
-# ### Conduct basic analytic operations
+# ### Perform basic operations
 # You can even accomplish some basic analytics operations like finding sums.
-# 
-# If you're planning on doing further processing, note that the numeric outputs 
-# are strings by default
+#
+# If you're planning on doing further processing, note that the numeric outputs
+# are strings by default.
 
-# In[9]:
+# In[10]:
 
 
-results = client.get(socrata_dataset_identifier, 
-                     group="recipient", 
-                     select="sum(amount), recipient", 
+results = client.get(socrata_dataset_identifier,
+                     group="recipient",
+                     select="sum(amount), recipient",
                      order="sum(amount) DESC")
 results
 
 
 # ### Break download into managable chunks
-# Sometimes you do want all the data, but it would be too big for one download. 
-# 
-# By default, all queries have a limit of 1000 rows, but you can manually set it 
+# Sometimes you do want all the data, but it would be too big for one download.
+#
+# By default, all queries have a limit of 1000 rows, but you can manually set it
 # higher or lower. If you want to loop through results, just use `offset`
 
-# In[10]:
+# In[11]:
 
 
 results = client.get(socrata_dataset_identifier, limit=6, select="name, amount")
@@ -134,28 +131,28 @@ loop_size = 3
 num_loops = 2
 
 for i in range(num_loops):
-    results = client.get(socrata_dataset_identifier, 
-                         select="name, amount", 
+    results = client.get(socrata_dataset_identifier,
+                         select="name, amount",
                          limit=loop_size,
-                         offset=loop_size*i)
+                         offset=loop_size * i)
     print("\n> Loop number: {}".format(i))
-    
+
     # This simply formats the output nicely
     for result in results:
         print(result)
 
 
 # ### Query strings
-# All of the queries above were made with method parameters, 
-# but you could also pass all the parameters at once in a 
+# All of the queries above were made with method parameters,
+# but you could also pass all the parameters at once in a
 # SQL-like format
 
 # In[13]:
 
 
 query = """
-select 
-    name, 
+select
+    name,
     amount
 where
     amount > 1000
@@ -169,20 +166,23 @@ results
 
 
 # ### Free text search
-# My brother just got a dog named Slider, so we were curious about how many other dogs had that name. Searches with `q` match anywhere in the row, which allows you to quickly search through
-# data with several free text columns of interest.
+# My brother just got a dog named Slider, so we were curious about how many other New York City dogs had that name.
+#
+# Searches with `q` match anywhere in the row, which allows you to quickly search through data with several free text columns of interest.
 
-# In[19]:
+# In[20]:
 
 
 nyc_dogs_domain = 'data.cityofnewyork.us'
 nyc_dogs_dataset_identifier = 'nu7n-tubp'
 
 nyc_dogs_client = Socrata(nyc_dogs_domain, socrata_token)
-results = nyc_dogs_client.get(nyc_dogs_dataset_identifier, 
-                              q="Slider", 
+results = nyc_dogs_client.get(nyc_dogs_dataset_identifier,
+                              q="Slider",
                               select="animalname, breedname")
 results
 
 
-# That's it! For more background, check out [Queries using SODA](https://dev.socrata.com/docs/queries/). 
+# # Going Further
+#
+# There's plenty more to do! Check out [Queries using SODA](https://dev.socrata.com/docs/queries/) for additional functionality

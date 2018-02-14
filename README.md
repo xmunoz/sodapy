@@ -207,7 +207,7 @@ Close the session when you're finished.
 
 ## Run tests
 
-    $ ./runtests tests/
+    $ pytest
 
 ## Contributing
 

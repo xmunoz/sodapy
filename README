@@ -20,7 +20,8 @@ At its core, this library depends heavily on the
 `Requests <http://docs.python-requests.org/en/latest/>`__ package. All
 other requirements can be found in
 `requirements.txt <https://github.com/xmunoz/sodapy/blob/master/requirements.txt>`__.
-``sodapy`` is currently compatible with Python 2.7, 3.3, 3.4 and 3.5.
+``sodapy`` is currently compatible with Python 2.7, 3.3, 3.4, 3.5, and
+3.6.
 
 Documentation
 -------------
@@ -30,6 +31,13 @@ thorough documentation of the available methods, as well as other client
 libraries. A quick list of eligible domains to use with the API is
 available
 `here <https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija>`__.
+
+Examples
+--------
+
+There are some `jupyter <https://jupyter.org/>`__ notebooks in the
+`examples directory <examples>`__ with usages examples of sodapy in
+action.
 
 Interface
 ---------
@@ -72,8 +80,16 @@ bare-bones client:
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
-The client by default makes requests over https. To modify this behavior
-or make requests through a proxy, take a look
+A client can also be created with a context manager to obviate the need
+for teardown:
+
+::
+
+    >>> with Socrata("sandbox.demo.socrata.com", None) as client:
+    >>>    # do some stuff
+
+The client, by default, makes requests over HTTPS. To modify this
+behavior, or to make requests through a proxy, take a look
 `here <https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628>`__.
 
 get(dataset\_identifier, content\_type="json", \*\*kwargs)
@@ -284,7 +300,7 @@ Run tests
 
 ::
 
-    $ ./runtests tests/
+    $ pytest
 
 Contributing
 ------------
