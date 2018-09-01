@@ -94,6 +94,46 @@ class Socrata(object):
         '''
         self.close()
 
+    def datasets(self, limit=0, offset=0):
+        '''
+        Returns the list of datasets associated with a particular domain.
+        WARNING: Large limits (>1000) will return megabytes of data,
+        which can be slow on low-bandwidth networks, and is also a lot of
+        data to hold in memory.
+
+        https://data.edmonton.ca/api/catalog/v1?domains=data.edmonton.ca
+
+            limit: max number of results to return, default is all (0)
+            offset: the offset of result set
+        '''
+        resource = "{0}{1}".format("/api/catalog/v1?domains=", self.domain)
+
+        if limit:
+            resource = "{}&limit=".format(resource, limit)
+        resource = "{}&offset={}".format(resource, offset)
+
+        results = self._perform_request("get", resource)
+        numResults= results['resultSetSize']
+        # no more results to fetch, or limit reached
+        if (limit >= numResults or limit == len(results['results']) 
+                or numResults == len(results['results'])):
+            return results['results']
+
+        if limit != 0:
+            raise Exception("Unexpected number of results returned from endpoint.\
+                    Expected {0}, got {1}.".format(limit, len(results['results'])))
+
+        # get all remaining results
+        all_results = results['results']
+        while len(all_results) != numResults:
+            new_offset = len(results["results"])
+            offset += new_offset
+            resource = re.sub("offset=\d+", "offset={}".format(offset) ,resource)
+            results = self._perform_request("get", resource)
+            all_results.extend(results['results'])
+
+        return all_results
+
     def create(self, name, **kwargs):
         '''
         Create a dataset, including the field types. Optionally, specify args such as:
@@ -364,6 +404,7 @@ class Socrata(object):
 
         # handle errors
         if response.status_code not in (200, 202):
+            print(uri)
             _raise_for_status(response)
 
         # when responses have no content body (ie. delete, set_permission),
