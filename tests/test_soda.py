@@ -82,18 +82,20 @@ def test_get_unicode():
 
     client.close()
 
+
 def test_get_datasets():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
     adapter = requests_mock.Adapter()
     mock_adapter["adapter"] = adapter
     client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
-    
+
     setup_datasets_mock(adapter, "get_datasets.txt", 200, params={"limit": "7"})
     response = client.datasets(limit=7)
 
     assert isinstance(response, list)
     assert len(response) == 7
+
 
 def test_get_metadata_and_attachments():
     mock_adapter = {}
@@ -421,6 +423,7 @@ def setup_old_api_mock(adapter, method, response, response_code, reason="OK",
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
+
 def setup_datasets_mock(adapter, response, response_code, reason="OK", params={}):
     path = os.path.join(TEST_DATA_PATH, response)
     with open(path, "r") as response_body:
@@ -430,13 +433,14 @@ def setup_datasets_mock(adapter, response, response_code, reason="OK", params={}
 
     if "offset" not in params:
         params['offset'] = 0
-        uri = "{0}?{1}".format(uri, "&".join(["{}={}".format(k,v) for k,v in params.items()]))
-    
+        uri = "{0}?{1}".format(uri, "&".join(["{}={}".format(k, v) for k, v in params.items()]))
+
     headers = {
         "content-type": "application/json; charset=utf-8"
     }
     adapter.register_uri("get", uri, status_code=response_code, json=body, reason=reason,
-        headers=headers)
+            headers=headers)
+
 
 def setup_mock(adapter, method, response, response_code, reason="OK",
                dataset_identifier=DATASET_IDENTIFIER, content_type="json"):
