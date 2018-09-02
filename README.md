@@ -25,6 +25,7 @@ There are some [jupyter](https://jupyter.org/) notebooks in the [examples direct
 ### Table of Contents
 
 - [client](#client)
+- [`datasets`](#datasetslimit0-offset0)
 - [`get`](#getdataset_identifier-content_typejson-kwargs)
 - [`get_metadata`](#get_metadatadataset_identifier-content_typejson)
 - [`update_metadata`](#update_metadatadataset_identifier-update_fields-content_typejson)
@@ -56,6 +57,13 @@ A client can also be created with a context manager to obviate the need for tear
     >>>    # do some stuff
 
 The client, by default, makes requests over HTTPS. To modify this behavior, or to make requests through a proxy, take a look [here](https://github.com/xmunoz/sodapy/issues/31#issuecomment-302176628).
+
+### datasets(limit=0, offset=0)
+
+Retrieve datasets associated with a particular domain. The optional `limit` and `offset` keyword args can be used to retrieve a subset of the datasets. By default, all datasets are returned.
+
+    >>> client.datasets()
+    [{"resource" : {"name" : "Approved Building Permits", "id" : "msk6-43c6", "parent_fxf" : null, "description" : "Data of approved building/construction permits",...}, {resource : {...}}, ...]
 
 ### get(dataset_identifier, content_type="json", **kwargs)
 

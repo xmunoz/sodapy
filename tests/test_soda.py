@@ -1,5 +1,5 @@
 from sodapy import Socrata
-from sodapy.constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
+from sodapy.constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
 import pytest
 import requests
 import requests_mock
@@ -81,6 +81,20 @@ def test_get_unicode():
     assert len(response) == 10
 
     client.close()
+
+
+def test_get_datasets():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
+
+    setup_datasets_mock(adapter, "get_datasets.txt", 200, params={"limit": "7"})
+    response = client.datasets(limit=7)
+
+    assert isinstance(response, list)
+    assert len(response) == 7
 
 
 def test_get_metadata_and_attachments():
@@ -196,7 +210,7 @@ def test_delete():
     client = Socrata(DOMAIN, APPTOKEN, username=USERNAME, password=PASSWORD,
                      session_adapter=mock_adapter)
 
-    uri = "{0}{1}{2}/{3}.json".format(PREFIX, DOMAIN, OLD_API_PREFIX, DATASET_IDENTIFIER)
+    uri = "{0}{1}{2}/{3}.json".format(PREFIX, DOMAIN, OLD_API_PATH, DATASET_IDENTIFIER)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(DATASET_IDENTIFIER)
     assert response.status_code == 200
@@ -343,7 +357,7 @@ def setup_publish_mock(adapter, method, response, response_code, reason="OK",
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}{2}/{3}/publication.{4}".format(PREFIX, DOMAIN, OLD_API_PREFIX,
+    uri = "{0}{1}{2}/{3}/publication.{4}".format(PREFIX, DOMAIN, OLD_API_PATH,
                                                  dataset_identifier, content_type)
 
     headers = {
@@ -378,7 +392,7 @@ def setup_replace_non_data_file(adapter, method, response, response_code, reason
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}{2}/{3}.{4}?method=replaceBlob&id={3}".format(PREFIX, DOMAIN, OLD_API_PREFIX,
+    uri = "{0}{1}{2}/{3}.{4}?method=replaceBlob&id={3}".format(PREFIX, DOMAIN, OLD_API_PATH,
                                                                dataset_identifier, "txt")
 
     headers = {
@@ -399,7 +413,7 @@ def setup_old_api_mock(adapter, method, response, response_code, reason="OK",
         except ValueError:
             body = None
 
-    uri = "{0}{1}{2}/{3}.{4}".format(PREFIX, DOMAIN, OLD_API_PREFIX, dataset_identifier,
+    uri = "{0}{1}{2}/{3}.{4}".format(PREFIX, DOMAIN, OLD_API_PATH, dataset_identifier,
                                      content_type)
 
     headers = {
@@ -407,6 +421,24 @@ def setup_old_api_mock(adapter, method, response, response_code, reason="OK",
     }
 
     adapter.register_uri(method, uri, status_code=response_code, json=body, reason=reason,
+                         headers=headers)
+
+
+def setup_datasets_mock(adapter, response, response_code, reason="OK", params={}):
+    path = os.path.join(TEST_DATA_PATH, response)
+    with open(path, "r") as response_body:
+        body = json.load(response_body)
+
+    uri = "{0}{1}{2}".format(PREFIX, DOMAIN, DATASETS_PATH)
+
+    if "offset" not in params:
+        params['offset'] = 0
+        uri = "{0}?{1}".format(uri, "&".join(["{}={}".format(k, v) for k, v in params.items()]))
+
+    headers = {
+        "content-type": "application/json; charset=utf-8"
+    }
+    adapter.register_uri("get", uri, status_code=response_code, json=body, reason=reason,
                          headers=headers)
 
 
@@ -418,9 +450,9 @@ def setup_mock(adapter, method, response, response_code, reason="OK",
         body = json.load(response_body)
 
     if dataset_identifier is None:  # for create endpoint
-        uri = "{0}{1}{2}.{3}".format(PREFIX, DOMAIN, OLD_API_PREFIX, "json")
+        uri = "{0}{1}{2}.{3}".format(PREFIX, DOMAIN, OLD_API_PATH, "json")
     else:  # most cases
-        uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PREFIX, dataset_identifier,
+        uri = "{0}{1}{2}{3}.{4}".format(PREFIX, DOMAIN, DEFAULT_API_PATH, dataset_identifier,
                                         content_type)
 
     headers = {
