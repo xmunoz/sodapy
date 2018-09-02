@@ -439,7 +439,7 @@ def setup_datasets_mock(adapter, response, response_code, reason="OK", params={}
         "content-type": "application/json; charset=utf-8"
     }
     adapter.register_uri("get", uri, status_code=response_code, json=body, reason=reason,
-            headers=headers)
+                         headers=headers)
 
 
 def setup_mock(adapter, method, response, response_code, reason="OK",
