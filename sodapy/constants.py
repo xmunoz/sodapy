@@ -1,2 +1,3 @@
-DEFAULT_API_PREFIX = "/resource/"
-OLD_API_PREFIX = "/api/views"
+DEFAULT_API_PATH = "/resource/"
+OLD_API_PATH = "/api/views"
+DATASETS_PATH = "/api/catalog/v1"

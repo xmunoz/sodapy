@@ -12,7 +12,7 @@ import logging
 import re
 import os
 
-from .constants import DEFAULT_API_PREFIX, OLD_API_PREFIX
+from .constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
 
 
 class Socrata(object):
@@ -101,22 +101,22 @@ class Socrata(object):
         which can be slow on low-bandwidth networks, and is also a lot of
         data to hold in memory.
 
-        https://data.edmonton.ca/api/catalog/v1?domains=data.edmonton.ca
+        This method performs a get request on these type of URLs:
+        https://data.edmonton.ca/api/catalog/v1
 
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
         '''
-        resource = "{0}{1}".format("/api/catalog/v1?domains=", self.domain)
-
+        params = {}
         if limit:
-            resource = "{}&limit=".format(resource, limit)
-        resource = "{}&offset={}".format(resource, offset)
+            params['limit'] = limit
+        params['offset'] = offset
 
-        results = self._perform_request("get", resource)
-        numResults= results['resultSetSize']
+        results = self._perform_request("get", DATASETS_PATH, params=params)
+        numResults = results['resultSetSize']
         # no more results to fetch, or limit reached
-        if (limit >= numResults or limit == len(results['results']) 
-                or numResults == len(results['results'])):
+        if (limit >= numResults or limit == len(results['results']) or
+                numResults == len(results['results'])):
             return results['results']
 
         if limit != 0:
@@ -127,9 +127,8 @@ class Socrata(object):
         all_results = results['results']
         while len(all_results) != numResults:
             new_offset = len(results["results"])
-            offset += new_offset
-            resource = re.sub("offset=\d+", "offset={}".format(offset) ,resource)
-            results = self._perform_request("get", resource)
+            params['offset'] += new_offset
+            results = self._perform_request("get", DATASETS_PATH, params=params)
             all_results.extend(results['results'])
 
         return all_results
@@ -404,7 +403,6 @@ class Socrata(object):
 
         # handle errors
         if response.status_code not in (200, 202):
-            print(uri)
             _raise_for_status(response)
 
         # when responses have no content body (ie. delete, set_permission),
@@ -477,12 +475,12 @@ def _format_old_api_request(dataid=None, content_type=None):
 
     if dataid is not None:
         if content_type is not None:
-            return "{0}/{1}.{2}".format(OLD_API_PREFIX, dataid, content_type)
+            return "{0}/{1}.{2}".format(OLD_API_PATH, dataid, content_type)
         else:
-            return "{0}/{1}".format(OLD_API_PREFIX, dataid)
+            return "{0}/{1}".format(OLD_API_PATH, dataid)
     else:
         if content_type is not None:
-            return "{0}.{1}".format(OLD_API_PREFIX, content_type)
+            return "{0}.{1}".format(OLD_API_PATH, content_type)
         else:
             raise Exception("This method requires at least a dataset_id or content_type.")
 
@@ -491,9 +489,9 @@ def _format_new_api_request(dataid=None, row_id=None, content_type=None):
     if dataid is not None:
         if content_type is not None:
             if row_id is not None:
-                return "{0}{1}/{2}.{3}".format(DEFAULT_API_PREFIX, dataid, row_id, content_type)
+                return "{0}{1}/{2}.{3}".format(DEFAULT_API_PATH, dataid, row_id, content_type)
             else:
-                return "{0}{1}.{2}".format(DEFAULT_API_PREFIX, dataid, content_type)
+                return "{0}{1}.{2}".format(DEFAULT_API_PATH, dataid, content_type)
 
     raise Exception("This method requires at least a dataset_id or content_type.")
 
