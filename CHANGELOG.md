@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+## 1.4.7
+
+* Feature: Add `datasets` method
+* Bugfix: Clean up contributing documentation
+
 ## 1.4.6
 
 * Feature: Use Socrata client with a context manager
