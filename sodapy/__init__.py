@@ -107,7 +107,7 @@ class Socrata(object):
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
         '''
-        params = {}
+        params = {'domains': self.domain}
         if limit:
             params['limit'] = limit
         params['offset'] = offset
