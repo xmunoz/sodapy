@@ -1,2 +1,2 @@
-future==0.16.0
-requests==2.19.1
+future>=0.17.1
+requests>=2.20.0

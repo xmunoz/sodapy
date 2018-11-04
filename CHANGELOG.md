@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+## 1.5.0
+
+* Bugfix: Bump requests library version because of CVE-2018-18074
+* Feature: Loosen requirements.txt versions
+
 ## 1.4.7
 
 * Feature: Add `datasets` method
