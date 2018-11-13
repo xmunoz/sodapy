@@ -107,12 +107,12 @@ class Socrata(object):
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
         '''
-        params = {'domains': self.domain}
+        params = [('domains', self.domain)]
         if limit:
-            params['limit'] = limit
-        params['offset'] = offset
+            params.append(('limit', limit))
 
-        results = self._perform_request("get", DATASETS_PATH, params=params)
+        results = self._perform_request("get", DATASETS_PATH,
+                                        params=params + [('offset', offset)])
         numResults = results['resultSetSize']
         # no more results to fetch, or limit reached
         if (limit >= numResults or limit == len(results['results']) or
@@ -126,9 +126,9 @@ class Socrata(object):
         # get all remaining results
         all_results = results['results']
         while len(all_results) != numResults:
-            new_offset = len(results["results"])
-            params['offset'] += new_offset
-            results = self._perform_request("get", DATASETS_PATH, params=params)
+            offset += len(results["results"])
+            results = self._perform_request("get", DATASETS_PATH,
+                                            params=params + [('offset', offset)])
             all_results.extend(results['results'])
 
         return all_results
