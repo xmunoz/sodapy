@@ -94,7 +94,7 @@ class Socrata(object):
         '''
         self.close()
 
-    def datasets(self, limit=0, offset=0):
+    def datasets(self, limit=0, offset=0, **kwargs):
         '''
         Returns the list of datasets associated with a particular domain.
         WARNING: Large limits (>1000) will return megabytes of data,
@@ -107,9 +107,20 @@ class Socrata(object):
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
         '''
-        params = [('domains', self.domain)]
+        params = []
         if limit:
             params.append(('limit', limit))
+        for key in ('ids', 'domains', 'categories', 'tags', 'only',
+                    'shared_to', 'column_names'):
+            items = kwargs.pop(key, [])
+            if not isinstance(items, (list, tuple)):
+                items = [items]
+            for item in items:
+                params.append((key, item))
+        # TODO: custom metadata
+        if kwargs:
+            raise TypeError("datasets() got an unexpected keyword argument %r" %
+                            next(iter(kwargs)))
 
         results = self._perform_request("get", DATASETS_PATH,
                                         params=params + [('offset', offset)])
