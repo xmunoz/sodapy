@@ -118,6 +118,12 @@ class Socrata(object):
             for item in items:
                 params.append((key, item))
         # TODO: custom metadata
+        for key in ('q', 'min_should_match', 'attribution', 'license',
+                    'derived_from', 'provenance', 'for_user', 'visibility',
+                    'public', 'published', 'approval_status',
+                    'explicitly_hidden', 'derived'):
+            if key in kwargs:
+                params.append((key, kwargs.pop(key)))
         if kwargs:
             raise TypeError("datasets() got an unexpected keyword argument %r" %
                             next(iter(kwargs)))
