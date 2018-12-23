@@ -130,7 +130,9 @@ class Socrata(object):
                     params.append((key, item))
             elif key in filter_single:
                 params.append((key, value))
-        # TODO: custom metadata
+        # TODO: custom domain-specific metadata
+        # https://socratadiscovery.docs.apiary.io/
+        #     #reference/0/find-by-domain-specific-metadata
 
         if order:
             params.append(('order', order))
