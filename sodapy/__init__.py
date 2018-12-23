@@ -106,6 +106,51 @@ class Socrata(object):
 
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
+            order: field to sort on, optionally with ' ASC' or ' DESC' suffix
+            ids: list of dataset IDs to consider
+            domains: list of domains to search
+            categories: list of categories
+            tags: list of tags
+            only: list of logical types to return, among `api`, `calendar`,
+                `chart`, `datalens`, `dataset`, `federated_href`, `file`,
+                `filter`, `form`, `href`, `link`, `map`, `measure`, `story`,
+                `visualization`
+            shared_to: list of users IDs or team IDs that datasets have to be
+                shared with, or the string `site` meaning anyone on the domain.
+                Note that you may only specify yourself or a team that you are
+                on.
+                Also note that if you search for assets shared to you, assets
+                owned by you might be not be returned.
+            column_names: list of column names that must be present in the
+                tabular datasets
+            q: text query that will be used by Elasticsearch to match results
+            min_should_match: string specifying the number of words from `q`
+                that should match. Refer to Elasticsearch docs for the format,
+                the default is '3<60%', meaning that 60% of the terms must
+                match, or all of them if there are 3 or fewer.
+            attribution: string specifying the organization datasets must come
+                from
+            license: string used to filter on results having a specific license
+            derived_from: string containing the ID of a dataset that must be a
+                parent of the result datasets (for example, charts are derived
+                from a parent dataset)
+            provenance: string 'official' or 'community'
+            for_user: string containing a user ID that must own the returned
+                datasets
+            visibility: string 'open' or 'internal'
+            public: boolean indicating that all returned datasets should be
+                public (True) or private (False)
+            published: boolean indicating that returned datasets should have
+                been published (True) or not yet published (False)
+            approval_status: string 'pending', 'rejected', 'approved',
+                'not_ready' filtering results by their current status in the
+                approval pipeline
+            explicitly_hidden: boolean filtering out datasets that have been
+                explicitly hidden on a domain (False) or returning only those
+                (True)
+            derived: boolean allowing to search only for derived datasets
+                (True) or only those from which other datasets were derived
+                (False)
         '''
         # Those filters can be passed multiple times; this function expects
         # an iterable for them
