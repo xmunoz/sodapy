@@ -129,7 +129,7 @@ class Socrata(object):
                             next(iter(kwargs)))
 
         if order:
-            kwargs.append(('order', order))
+            params.append(('order', order))
 
         results = self._perform_request("get", DATASETS_PATH,
                                         params=params + [('offset', offset)])
