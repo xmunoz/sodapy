@@ -107,26 +107,30 @@ class Socrata(object):
             limit: max number of results to return, default is all (0)
             offset: the offset of result set
         '''
+        # Those filters can be passed multiple times; this function expects
+        # an iterable for them
+        filter_multiple = set(['ids', 'domains', 'categories', 'tags', 'only',
+                               'shared_to', 'column_names'])
+        # Those filters only get a single value
+        filter_single = set([
+            'q', 'min_should_match', 'attribution', 'license', 'derived_from',
+            'provenance', 'for_user', 'visibility', 'public', 'published',
+            'approval_status', 'explicitly_hidden', 'derived'
+        ])
+        all_filters = filter_multiple.union(filter_single)
+        for key in kwargs:
+            if key not in all_filters:
+                raise TypeError("Unexpected keyword argument %s" % key)
         params = []
         if limit:
             params.append(('limit', limit))
-        for key in ('ids', 'domains', 'categories', 'tags', 'only',
-                    'shared_to', 'column_names'):
-            items = kwargs.pop(key, [])
-            if not isinstance(items, (list, tuple)):
-                items = [items]
-            for item in items:
-                params.append((key, item))
+        for key, value in kwargs.items():
+            if key in filter_multiple:
+                for item in value:
+                    params.append((key, item))
+            elif key in filter_single:
+                params.append((key, value))
         # TODO: custom metadata
-        for key in ('q', 'min_should_match', 'attribution', 'license',
-                    'derived_from', 'provenance', 'for_user', 'visibility',
-                    'public', 'published', 'approval_status',
-                    'explicitly_hidden', 'derived'):
-            if key in kwargs:
-                params.append((key, kwargs.pop(key)))
-        if kwargs:
-            raise TypeError("datasets() got an unexpected keyword argument %r" %
-                            next(iter(kwargs)))
 
         if order:
             params.append(('order', order))
