@@ -220,3 +220,13 @@ Close the session when you're finished.
 ## Contributing
 
 See [CONTRIBUTING.md](https://github.com/xmunoz/sodapy/blob/master/CONTRIBUTING.md).
+
+## Meta
+
+This package uses [semantic versioning](https://semver.org/).
+
+Source and wheel distributions are available on PyPI. Here is how I create those releases.
+
+    python3 setup.py bdist_wheel
+    python3 setup.py sdist
+    twine upload dist/*
