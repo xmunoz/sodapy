@@ -1,9 +1,13 @@
 sodapy changes by release
 ==========================
+## 1.5.2
+
+* Feature: Render markdown readme in PyPI
+* Cleanup: Remove deleted files from MANFEST.in
+
 ## 1.5.1
 
 * Feature: Add support for the discovery API
-* Feature: Render markdown readme in PyPI
 
 ## 1.5.0
 
