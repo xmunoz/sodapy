@@ -6,11 +6,8 @@ from setuptools import setup
 with open("sodapy/version.py") as f:
     exec(f.read())
 
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except(IOError, ImportError):
-    long_description = open('README').read()
+with open('README.md') as f:
+    long_description = f.read()
 
 with open('requirements.txt') as requirements:
     required = requirements.read().splitlines()
@@ -21,6 +18,7 @@ kwargs = {
     "packages": ["sodapy"],
     "description": "Python library for the Socrata Open Data API",
     "long_description": long_description,
+    "long_description_content_type": 'text/markdown',
     "author": "Cristina Muñoz",
     "maintainer": "Cristina Muñoz",
     "author_email": "hi@xmunoz.com",

@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+## 1.5.1
+
+* Feature: Add support for the discovery API
+* Feature: Render markdown readme in PyPI
+
 ## 1.5.0
 
 * Bugfix: Bump requests library version because of CVE-2018-18074
