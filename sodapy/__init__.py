@@ -108,7 +108,7 @@ class Socrata(object):
             offset: the offset of result set
             order: field to sort on, optionally with ' ASC' or ' DESC' suffix
             ids: list of dataset IDs to consider
-            domains: list of domains to search
+            domains: list of additional domains to search
             categories: list of categories
             tags: list of tags
             only: list of logical types to return, among `api`, `calendar`,
@@ -166,7 +166,7 @@ class Socrata(object):
         for key in kwargs:
             if key not in all_filters:
                 raise TypeError("Unexpected keyword argument %s" % key)
-        params = []
+        params = [('domain', self.domain)]
         if limit:
             params.append(('limit', limit))
         for key, value in kwargs.items():
