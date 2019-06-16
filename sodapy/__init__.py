@@ -483,7 +483,7 @@ class Socrata(object):
 
         # for other request types, return most useful data
         content_type = response.headers.get('content-type').strip().lower()
-        if re.match(r'application\/json', content_type):
+        if re.match(r'application\/(vnd\.geo\+)?json', content_type):
             return response.json()
         elif re.match(r'text\/csv', content_type):
             csv_stream = StringIO(response.text)
