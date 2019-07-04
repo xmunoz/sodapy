@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+## 1.5.3
+
+* Feature: Add support for geojson
+* Bugfix: Fix `datasets()` filtering
+
 ## 1.5.2
 
 * Feature: Render markdown readme in PyPI
