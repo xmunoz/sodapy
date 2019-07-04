@@ -186,8 +186,8 @@ class Socrata(object):
                                         params=params + [('offset', offset)])
         numResults = results['resultSetSize']
         # no more results to fetch, or limit reached
-        if (limit >= numResults or limit == len(results['results']) or
-                numResults == len(results['results'])):
+        if (limit >= numResults or limit == len(results['results'])
+                or numResults == len(results['results'])):
             return results['results']
 
         if limit != 0:
