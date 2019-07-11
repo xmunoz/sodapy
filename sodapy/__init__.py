@@ -166,7 +166,7 @@ class Socrata(object):
         for key in kwargs:
             if key not in all_filters:
                 raise TypeError("Unexpected keyword argument %s" % key)
-        params = [('domain', self.domain)]
+        params = [('domains', self.domain)]
         if limit:
             params.append(('limit', limit))
         for key, value in kwargs.items():
