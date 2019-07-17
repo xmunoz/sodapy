@@ -1,5 +1,9 @@
 sodapy changes by release
 ==========================
+## 1.5.4
+
+* Bugfix: Fix `datasets()` filtering for realzies
+
 ## 1.5.3
 
 * Feature: Add support for geojson
