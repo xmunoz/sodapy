@@ -18,7 +18,7 @@ The [official Socrata API docs](http://dev.socrata.com/) provide thorough docume
 
 Note: Creating and updating Socrata datasets with the Socrata Open Data API (SODA) differs from staging and transforming data in a draft before publication with the Socrata Data Management API. 
 
-This library supports writing directly to datasets with the Socrata Open Data API. For write operations that use data transformations in the Socrata Data Management Experience (the user interface for creating datasets), use the Socrata Data Management API. For more details on when to use SODA vs the Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#).
+This library supports writing directly to datasets with the Socrata Open Data API. For write operations that use data transformations in the Socrata Data Management Experience (the user interface for creating datasets), use the Socrata Data Management API. For more details on when to use SODA vs the Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#). A Python SDK for the Socrata Data Management API can be found at [socrata-py](https://github.com/socrata/socrata-py).
 
 ## Examples
 
