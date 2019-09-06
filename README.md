@@ -16,6 +16,10 @@ At its core, this library depends heavily on the [Requests](http://docs.python-r
 
 The [official Socrata API docs](http://dev.socrata.com/) provide thorough documentation of the available methods, as well as other client libraries. A quick list of eligible domains to use with the API is available [here](https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija).
 
+Note: Creating and updating Socrata datasets with the Socrata Open Data API (SODA) differs from staging and transforming data in a draft before publication with the Socrata Data Management API. 
+
+This library supports writing directly to datasets with the Socrata Open Data API. For write operations that use data transformations in the Socrata Data Management Experience (the user interface for creating datasets), use the Socrata Data Management API. For more details on when to use SODA vs the Data Management API, see the [Data Management API documentation](https://socratapublishing.docs.apiary.io/#).
+
 ## Examples
 
 There are some [jupyter](https://jupyter.org/) notebooks in the [examples directory](examples) with usages examples of sodapy in action.
