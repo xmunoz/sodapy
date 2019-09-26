@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+## 1.5.5
+
+* Feature: Support python 3.7
+* Cleanup: Update readme 
+
 ## 1.5.4
 
 * Bugfix: Fix `datasets()` filtering for realzies
