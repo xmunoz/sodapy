@@ -1,7 +1,7 @@
 [![PyPI version](https://badge.fury.io/py/sodapy.svg)](http://badge.fury.io/py/sodapy) [![Build Status](https://travis-ci.org/xmunoz/sodapy.svg?branch=master)](https://travis-ci.org/xmunoz/sodapy)
 
 # sodapy
-Python bindings for the Socrata Open Data API
+sodapy is a python client for the [Socrata Open Data API](https://dev.socrata.com/).
 
 ## Installation
 You can install with `pip install sodapy`.
@@ -10,11 +10,11 @@ If you want to install from source, then clone this repository and run `python s
 
 ## Requirements
 
-At its core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt). `sodapy` is currently compatible with Python 2.7, 3.4, 3.5, and 3.6.
+At its core, this library depends heavily on the [Requests](http://docs.python-requests.org/en/latest/) package. All other requirements can be found in [requirements.txt](https://github.com/xmunoz/sodapy/blob/master/requirements.txt). `sodapy` is currently compatible with Python 2.7, 3.4, 3.5, 3.6, and 3.7.
 
 ## Documentation
 
-The [official Socrata API docs](http://dev.socrata.com/) provide thorough documentation of the available methods, as well as other client libraries. A quick list of eligible domains to use with the API is available [here](https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija).
+The [official Socrata API docs](http://dev.socrata.com/) provide thorough documentation of the available methods, as well as [other client libraries](https://dev.socrata.com/libraries/). A quick list of eligible domains to use with the API is available [here](https://opendata.socrata.com/dataset/Socrata-Customer-Spotlights/6wk3-4ija).
 
 Note: Creating and updating Socrata datasets with the Socrata Open Data API (SODA) differs from staging and transforming data in a draft before publication with the Socrata Data Management API. 
 
@@ -22,7 +22,7 @@ This library supports writing directly to datasets with the Socrata Open Data AP
 
 ## Examples
 
-There are some [jupyter](https://jupyter.org/) notebooks in the [examples directory](examples) with usages examples of sodapy in action.
+There are some [jupyter](https://jupyter.org/) notebooks in the [examples directory](examples) with usage examples of sodapy in action.
 
 ## Interface
 
@@ -49,7 +49,7 @@ There are some [jupyter](https://jupyter.org/) notebooks in the [examples direct
 Import the library and set up a connection to get started.
 
     >>> from sodapy import Socrata
-    >>> client = Socrata("sandbox.demo.socrata.com", "FakeAppToken", username="fakeuser@somedomain.com", password="ndKS92mS01msjJKs")
+    >>> client = Socrata("sandbox.demo.socrata.com", "FakeAppToken", username="fakeuser@somedomain.com", password="mypassword")
 
 `username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be subjected to strict throttling limits. To create a bare-bones client:
 
