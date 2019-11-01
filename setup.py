@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
 
 from setuptools import setup
 
@@ -29,10 +28,11 @@ kwargs = {
     "download_url": "https://github.com/xmunoz/sodapy/archive/master.tar.gz",
     "keywords": "soda socrata opendata api",
     "classifiers": [
-        "Programming Language :: Python",
-        "Topic :: Software Development",
-        "Topic :: Software Development :: Libraries",
+        "Programming Language :: Python :: 3",
         "Topic :: Software Development :: Libraries :: Python Modules",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Development Status :: 5 - Production/Stable",
     ]
 }
 
