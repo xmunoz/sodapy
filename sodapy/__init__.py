@@ -1,9 +1,3 @@
-from __future__ import absolute_import
-from future import standard_library
-
-standard_library.install_aliases()
-
-from builtins import object
 from io import StringIO, IOBase
 import requests
 import csv
@@ -15,7 +9,7 @@ import os
 from .constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
 
 
-class Socrata(object):
+class Socrata:
     '''
     The main class that interacts with the SODA API. Sample usage:
         from sodapy import Socrata
@@ -419,16 +413,10 @@ class Socrata(object):
         Execute the update task.
         '''
 
-        # python2/3 compatibility wizardry
-        try:
-            file_type = file
-        except NameError:
-            file_type = IOBase
-
         if isinstance(payload, (dict, list)):
             response = self._perform_request(method, resource,
                                              data=json.dumps(payload))
-        elif isinstance(payload, file_type):
+        elif isinstance(payload, IOBase):
             headers = {
                 "content-type": "text/csv",
             }
