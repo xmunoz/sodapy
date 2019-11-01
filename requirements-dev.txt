@@ -2,4 +2,4 @@
 flake8>=3.5.0
 pytest>=3.7.4
 requests-mock>=1.5.2
-black; python_version < '3.6'
+black; python_version > '3.5'
