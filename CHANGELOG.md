@@ -1,5 +1,11 @@
 sodapy changes by release
 ==========================
+## 2.0.0
+
+* Cleanup: Remove python 2 support
+* Cleanup: Update trove classifiers for PyPI. 
+* Feature: Add CODE_OF_CONDUCT to the repository.
+
 ## 1.5.5
 
 * Feature: Support python 3.7
