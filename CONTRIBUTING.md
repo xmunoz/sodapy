@@ -22,7 +22,7 @@ Install the package, and run tests to confirm that everything is set up properly
 1. Fork this repository
 2. Create a branch: `git checkout -b my_feature`
 3. Make changes
-4. Install and run `flake8 sodapy/` to ensure that your changes conform to the coding style of this project
+4. Run `black sodapy tests` to ensure that your changes conform to the coding style of this project
 5. Commit: `git commit -am "Great new feature that closes #3"`. Reference any related issues in the first line of the commit message.
 6. Push: `git push origin my_feature`
 7. Open a pull request
