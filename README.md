@@ -1,4 +1,4 @@
-[![PyPI version](https://badge.fury.io/py/sodapy.svg)](http://badge.fury.io/py/sodapy) [![Build Status](https://travis-ci.org/xmunoz/sodapy.svg?branch=master)](https://travis-ci.org/xmunoz/sodapy) [![Code Coverage](https://codecov.io/github/xmunoz/sodapy/coverage.svg?branch=master)]
+[![PyPI version](https://badge.fury.io/py/sodapy.svg)](http://badge.fury.io/py/sodapy) [![Build Status](https://travis-ci.org/xmunoz/sodapy.svg?branch=master)](https://travis-ci.org/xmunoz/sodapy) [![Code Coverage](https://codecov.io/github/xmunoz/sodapy/coverage.svg?branch=master)](https://codecov.io/github/xmunoz/sodapy)
 
 # sodapy
 sodapy is a python client for the [Socrata Open Data API](https://dev.socrata.com/).
