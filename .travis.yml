@@ -12,4 +12,8 @@ before_script:
   - "flake8 sodapy/"
   - "flake8 tests/"
 script:
-  - pytest
+  - coverage run --source sodapy -m pytest
+  - coverage report
+
+after_success:
+    - codecov
