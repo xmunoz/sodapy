@@ -1,6 +1,5 @@
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
   - "3.7"
@@ -12,4 +11,8 @@ before_script:
   - "flake8 sodapy/"
   - "flake8 tests/"
 script:
-  - pytest
+  - coverage run --source sodapy -m pytest
+  - coverage report
+
+after_success:
+    - codecov
