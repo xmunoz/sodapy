@@ -6,6 +6,7 @@ python:
   - "3.8"
 install:
   - "pip install -r requirements-dev.txt"
+  - "pip install codecov"
   - "python setup.py install"
 before_script:
   - "flake8 sodapy/"
