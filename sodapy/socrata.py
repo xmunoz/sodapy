@@ -17,6 +17,9 @@ class Socrata:
         client = Socrata("opendata.socrata.com", None)
     """
 
+    # https://dev.socrata.com/docs/paging.html#2.1
+    DEFAULT_LIMIT = 1000
+
     def __init__(
         self,
         domain,
@@ -410,6 +413,26 @@ class Socrata:
             "get", resource, headers=headers, params=params
         )
         return response
+
+    def get_all(self, *args, **kwargs):
+        """
+        Read data from the requested resource, paginating over all results.
+        Accepts the same arguments as get(). Returns a generator.
+        """
+        params = {}
+        params.update(kwargs)
+        if "offset" not in params:
+            params["offset"] = 0
+        limit = params.get("limit", self.DEFAULT_LIMIT)
+
+        while True:
+            response = self.get(*args, **params)
+            for item in response:
+                yield item
+
+            if len(response) < limit:
+                return
+            params["offset"] += limit
 
     def upsert(self, dataset_identifier, payload, content_type="json"):
         """

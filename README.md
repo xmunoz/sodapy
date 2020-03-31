@@ -83,6 +83,25 @@ Retrieve data from the requested resources. Filter and query data by field name,
     >>> client.get("nimj-3ivp", region="Kansas")
 	[{u'geolocation': {u'latitude': u'38.10', u'needs_recoding': False, u'longitude': u'-100.6135'}, u'version': u'9', u'source': u'nn', u'region': u'Kansas', u'occurred_at': u'2010-09-19T20:52:09', u'number_of_stations': u'15', u'depth': u'300.0', u'magnitude': u'1.9', u'earthquake_id': u'00189621'}, {...}]
 
+### get_all(dataset_identifier, content_type="json", **kwargs)
+
+Read data from the requested resource, paginating over all results. Accepts the same arguments as [`get()`](#getdataset_identifier-content_typejson-kwargs). Returns a generator.
+
+    >>> client.get_all("nimj-3ivp")
+	<generator object Socrata.get_all at 0x7fa0dc8be7b0>
+
+    >>> for item in client.get_all("nimj-3ivp"):
+	...     print(item)
+    ...
+    {'geolocation': {'latitude': '-15.563', 'needs_recoding': False, 'longitude': '-175.6104'}, 'version': '9', ':updated_at': 1348778988, 'number_of_stations': '275', 'region': 'Tonga', ':created_meta': '21484', 'occurred_at': '2012-09-13T21:16:43', ':id': 132, 'source': 'us', 'depth': '328.30', 'magnitude': '4.8', ':meta': '{\n}', ':updated_meta': '21484', 'earthquake_id': 'c000cnb5', ':created_at': 1348778988}
+    ...
+
+    >>> import itertools
+    >>> items = client.get_all("nimj-3ivp")
+    >>> first_five = list(itertools.islice(items, 5))
+    >>> len(first_five)
+    5
+
 ### get_metadata(dataset_identifier, content_type="json")
 
 Retrieve the metadata associated with a particular dataset.
