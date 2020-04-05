@@ -29,6 +29,7 @@ There are some [jupyter](https://jupyter.org/) notebooks in the [examples direct
 - [client](#client)
 - [`datasets`](#datasetslimit0-offset0)
 - [`get`](#getdataset_identifier-content_typejson-kwargs)
+- [`get_all`](#get_alldataset_identifier-content_typejson-kwargs)
 - [`get_metadata`](#get_metadatadataset_identifier-content_typejson)
 - [`update_metadata`](#update_metadatadataset_identifier-update_fields-content_typejson)
 - [`download_attachments`](#download_attachmentsdataset_identifier-content_typejson-download_dirsodapy_downloads)
