@@ -1,10 +1,18 @@
 sodapy changes by release
 ==========================
+## 2.1.0
+
+* Cleanup: Code formatting with black
+* Cleanup: Remove support for python 3.4
+* Cleanup: Refactor `__init__.py` into a few different files
+* Feature: Add `get_all` method
+* Feature: Add codecov to CI, add badge to README
+
 ## 2.0.0
 
 * Cleanup: Remove python 2 support
-* Cleanup: Update trove classifiers for PyPI. 
-* Feature: Add CODE_OF_CONDUCT to the repository.
+* Cleanup: Update trove classifiers for PyPI
+* Feature: Add CODE_OF_CONDUCT to the repository
 
 ## 1.5.5
 
