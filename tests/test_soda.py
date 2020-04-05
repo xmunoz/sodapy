@@ -67,6 +67,26 @@ def test_get():
     client.close()
 
 
+def test_get_all():
+    mock_adapter = {}
+    mock_adapter["prefix"] = PREFIX
+    adapter = requests_mock.Adapter()
+    mock_adapter["adapter"] = adapter
+    client = Socrata(DOMAIN, APPTOKEN, session_adapter=mock_adapter)
+
+    setup_mock(adapter, "GET", "bike_counts_page_1.json", 200, query="$offset=0")
+    setup_mock(adapter, "GET", "bike_counts_page_2.json", 200, query="$offset=1000")
+    response = client.get_all(DATASET_IDENTIFIER)
+
+    assert inspect.isgenerator(response)
+    data = list(response)
+    assert len(data) == 1001
+    assert data[0]["date"] == "2016-09-21T15:45:00.000"
+    assert data[-1]["date"] == "2016-10-02T01:45:00.000"
+
+    client.close()
+
+
 def test_get_unicode():
     mock_adapter = {}
     mock_adapter["prefix"] = PREFIX
@@ -561,6 +581,7 @@ def setup_mock(
     reason="OK",
     dataset_identifier=DATASET_IDENTIFIER,
     content_type="json",
+    query=None,
 ):
 
     path = os.path.join(TEST_DATA_PATH, response)
@@ -574,6 +595,9 @@ def setup_mock(
             PREFIX, DOMAIN, DEFAULT_API_PATH, dataset_identifier, content_type
         )
 
+    if query:
+        uri += "?" + query
+
     headers = {"content-type": "application/json; charset=utf-8"}
     adapter.register_uri(
         method,
@@ -582,4 +606,5 @@ def setup_mock(
         json=body,
         reason=reason,
         headers=headers,
+        complete_qs=True,
     )
