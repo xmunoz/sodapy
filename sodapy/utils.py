@@ -11,12 +11,12 @@ def raise_for_status(response):
     http_error_msg = ""
 
     if 400 <= response.status_code < 500:
-        http_error_msg = "{0} Client Error: {1}".format(
+        http_error_msg = "{} Client Error: {}".format(
             response.status_code, response.reason
         )
 
     elif 500 <= response.status_code < 600:
-        http_error_msg = "{0} Server Error: {1}".format(
+        http_error_msg = "{} Server Error: {}".format(
             response.status_code, response.reason
         )
 
