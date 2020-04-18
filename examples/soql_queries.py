@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 # # Example 02: SoSQL Queries
@@ -11,6 +10,7 @@
 
 
 import os
+
 # Note: we don't need Pandas
 # Filters allow you to accomplish many basic operations automatically
 
@@ -26,8 +26,8 @@ from sodapy import Socrata
 # In[2]:
 
 
-socrata_domain = 'opendata.socrata.com'
-socrata_dataset_identifier = 'f92i-ik66'
+socrata_domain = "opendata.socrata.com"
+socrata_dataset_identifier = "f92i-ik66"
 
 # If you choose to use a token, run the following command on the terminal (or add it to your .bashrc)
 # $ export SODAPY_APPTOKEN=<token>
@@ -48,13 +48,13 @@ client = Socrata(socrata_domain, socrata_token)
 
 
 metadata = client.get_metadata(socrata_dataset_identifier)
-[x['name'] for x in metadata['columns']]
+[x["name"] for x in metadata["columns"]]
 
 
 # In[5]:
 
 
-meta_amount = [x for x in metadata['columns'] if x['name'] == 'AMOUNT'][0]
+meta_amount = [x for x in metadata["columns"] if x["name"] == "AMOUNT"][0]
 meta_amount
 
 
@@ -66,7 +66,7 @@ meta_amount
 
 
 # Get the average from the metadata. Note that it's a string by default
-meta_amount['cachedContents']['average']
+meta_amount["cachedContents"]["average"]
 
 
 # In[7]:
@@ -74,7 +74,11 @@ meta_amount['cachedContents']['average']
 
 # Use the 'where' argument to filter the data before downloading it
 results = client.get(socrata_dataset_identifier, where="amount >= 2433")
-print("Total number of non-null results: {}".format(meta_amount['cachedContents']['non_null']))
+print(
+    "Total number of non-null results: {}".format(
+        meta_amount["cachedContents"]["non_null"]
+    )
+)
 print("Number of results downloaded: {}".format(len(results)))
 results[:3]
 
@@ -88,10 +92,12 @@ results[:3]
 # In[8]:
 
 
-results = client.get(socrata_dataset_identifier,
-                     where="amount < 2433",
-                     select="amount, job",
-                     order="amount ASC")
+results = client.get(
+    socrata_dataset_identifier,
+    where="amount < 2433",
+    select="amount, job",
+    order="amount ASC",
+)
 results[:3]
 
 
@@ -104,10 +110,12 @@ results[:3]
 # In[10]:
 
 
-results = client.get(socrata_dataset_identifier,
-                     group="recipient",
-                     select="sum(amount), recipient",
-                     order="sum(amount) DESC")
+results = client.get(
+    socrata_dataset_identifier,
+    group="recipient",
+    select="sum(amount), recipient",
+    order="sum(amount) DESC",
+)
 results
 
 
@@ -131,10 +139,12 @@ loop_size = 3
 num_loops = 2
 
 for i in range(num_loops):
-    results = client.get(socrata_dataset_identifier,
-                         select="name, amount",
-                         limit=loop_size,
-                         offset=loop_size * i)
+    results = client.get(
+        socrata_dataset_identifier,
+        select="name, amount",
+        limit=loop_size,
+        offset=loop_size * i,
+    )
     print("\n> Loop number: {}".format(i))
 
     # This simply formats the output nicely
@@ -173,13 +183,13 @@ results
 # In[20]:
 
 
-nyc_dogs_domain = 'data.cityofnewyork.us'
-nyc_dogs_dataset_identifier = 'nu7n-tubp'
+nyc_dogs_domain = "data.cityofnewyork.us"
+nyc_dogs_dataset_identifier = "nu7n-tubp"
 
 nyc_dogs_client = Socrata(nyc_dogs_domain, socrata_token)
-results = nyc_dogs_client.get(nyc_dogs_dataset_identifier,
-                              q="Slider",
-                              select="animalname, breedname")
+results = nyc_dogs_client.get(
+    nyc_dogs_dataset_identifier, q="Slider", select="animalname, breedname"
+)
 results
 
 

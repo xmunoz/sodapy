@@ -1,3 +1,7 @@
+"""
+Helper fuctions for the module.
+"""
+
 import requests
 
 from .constants import DEFAULT_API_PATH, OLD_API_PATH
@@ -42,32 +46,31 @@ def clear_empty_values(args):
 
 
 def format_old_api_request(dataid=None, content_type=None):
+    """
+    Construct the request url for the old Socrata API.
+    """
+    if content_type is None:
+        if dataid is None:
+            raise Exception("This method requires at least a dataid or content_type.")
+        return "{0}/{1}".format(OLD_API_PATH, dataid)
 
     if dataid is not None:
-        if content_type is not None:
-            return "{0}/{1}.{2}".format(OLD_API_PATH, dataid, content_type)
-        else:
-            return "{0}/{1}".format(OLD_API_PATH, dataid)
-    else:
-        if content_type is not None:
-            return "{0}.{1}".format(OLD_API_PATH, content_type)
-        else:
-            raise Exception(
-                "This method requires at least a dataset_id or content_type."
-            )
+        return "{0}/{1}.{2}".format(OLD_API_PATH, dataid, content_type)
+
+    return "{0}.{1}".format(OLD_API_PATH, content_type)
 
 
 def format_new_api_request(dataid=None, row_id=None, content_type=None):
-    if dataid is not None:
-        if content_type is not None:
-            if row_id is not None:
-                return "{0}{1}/{2}.{3}".format(
-                    DEFAULT_API_PATH, dataid, row_id, content_type
-                )
-            else:
-                return "{0}{1}.{2}".format(DEFAULT_API_PATH, dataid, content_type)
+    """
+    Construct the request url for the new Socrata API.
+    """
+    if dataid is None or content_type is None:
+        raise Exception("This method requires a dataset_id and content_type.")
 
-    raise Exception("This method requires at least a dataset_id or content_type.")
+    if row_id is None:
+        return "{0}{1}.{2}".format(DEFAULT_API_PATH, dataid, content_type)
+
+    return "{0}{1}/{2}.{3}".format(DEFAULT_API_PATH, dataid, row_id, content_type)
 
 
 def authentication_validation(username, password, access_token):

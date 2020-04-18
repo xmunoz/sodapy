@@ -1,3 +1,7 @@
+"""
+Tests for the utility functions
+"""
+
 import sodapy.utils as utils
 import pytest
 import requests
@@ -14,6 +18,9 @@ import requests
     ],
 )
 def test_raise_for_status(status_code, status_type, reason, raises_exception):
+    """
+    Ensure that HTTP error responses raise the right kind of Exceptions.
+    """
     response = requests.models.Response()
     response.status_code = status_code
     response.reason = reason
