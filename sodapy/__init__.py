@@ -1,3 +1,6 @@
+"""
+Exposes the Socrata class.
+"""
 from sodapy.socrata import Socrata
 from sodapy import version
 

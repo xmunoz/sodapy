@@ -1,10 +1,14 @@
+"""
+Core module functionality
+"""
+
 from io import StringIO, IOBase
-import requests
 import csv
 import json
 import logging
-import re
 import os
+import re
+import requests
 
 from sodapy.constants import DATASETS_PATH
 import sodapy.utils as utils
@@ -173,7 +177,6 @@ class Socrata:
                 "column_names",
             ]
         )
-        # Those filters only get a single value
         filter_single = set(
             [
                 "q",
@@ -191,22 +194,27 @@ class Socrata:
                 "derived",
             ]
         )
-        all_filters = filter_multiple.union(filter_single)
+        known_filters = filter_multiple.union(filter_single)
         for key in kwargs:
-            if key not in all_filters:
-                raise TypeError("Unexpected keyword argument %s" % key)
+            if key not in known_filters:
+                logging.info(
+                    "Unexpected keyword argument in Asset query. "
+                    "Assuming domain-specific metadata: %s=%s",
+                    key,
+                    str(kwargs[key]),
+                )
+
         params = [("domains", self.domain)]
+
         if limit:
             params.append(("limit", limit))
+
         for key, value in kwargs.items():
             if key in filter_multiple:
                 for item in value:
                     params.append((key, item))
-            elif key in filter_single:
+            else:
                 params.append((key, value))
-        # TODO: custom domain-specific metadata
-        # https://socratadiscovery.docs.apiary.io/
-        #     #reference/0/find-by-domain-specific-metadata
 
         if order:
             params.append(("order", order))
@@ -214,33 +222,31 @@ class Socrata:
         results = self._perform_request(
             "get", DATASETS_PATH, params=params + [("offset", offset)]
         )
-        numResults = results["resultSetSize"]
-        # no more results to fetch, or limit reached
+
+        num_results = results["resultSetSize"]
+        result_data = results["results"]
+
         if (
-            limit >= numResults
-            or limit == len(results["results"])
-            or numResults == len(results["results"])
+            limit >= num_results
+            or limit == len(result_data)
+            or num_results == len(result_data)
         ):
-            return results["results"]
+            return result_data
 
         if limit != 0:
             raise Exception(
-                "Unexpected number of results returned from endpoint.\
-                    Expected {0}, got {1}.".format(
-                    limit, len(results["results"])
-                )
+                "Unexpected number of results returned from endpoint."
+                "Expected {}, got {}.".format(limit, len(result_data))
             )
 
-        # get all remaining results
-        all_results = results["results"]
-        while len(all_results) != numResults:
-            offset += len(results["results"])
+        while len(result_data) != num_results:
+            offset += len(result_data)
             results = self._perform_request(
                 "get", DATASETS_PATH, params=params + [("offset", offset)]
             )
-            all_results.extend(results["results"])
+            result_data.extend(results["results"])
 
-        return all_results
+        return result_data
 
     def create(self, name, **kwargs):
         """
@@ -348,9 +354,7 @@ class Socrata:
             utils.download_file(uri, file_path)
             files.append(file_path)
 
-        logging.info(
-            "The following files were downloaded:\n\t{0}".format("\n\t".join(files))
-        )
+        logging.info("The following files were downloaded:\n\t%s", "\n\t".join(files))
         return files
 
     def publish(self, dataset_identifier, content_type="json"):
@@ -563,18 +567,18 @@ class Socrata:
         content_type = response.headers.get("content-type").strip().lower()
         if re.match(r"application\/(vnd\.geo\+)?json", content_type):
             return response.json()
-        elif re.match(r"text\/csv", content_type):
+        if re.match(r"text\/csv", content_type):
             csv_stream = StringIO(response.text)
-            return [line for line in csv.reader(csv_stream)]
-        elif re.match(r"application\/rdf\+xml", content_type):
+            return list(csv.reader(csv_stream))
+        if re.match(r"application\/rdf\+xml", content_type):
             return response.content
-        elif re.match(r"text\/plain", content_type):
+        if re.match(r"text\/plain", content_type):
             try:
                 return json.loads(response.text)
             except ValueError:
                 return response.text
-        else:
-            raise Exception("Unknown response format: {0}".format(content_type))
+
+        raise Exception("Unknown response format: {0}".format(content_type))
 
     def close(self):
         """
