@@ -83,7 +83,7 @@ def test_format_new_api_request_exception():
 
 @pytest.mark.parametrize(
     ("username", "password", "token"),
-    [("me", None, "123456"), (None, "pass", "123456"), ("me", "pass", "123456")]
+    [("me", None, "123456"), (None, "pass", "123456"), ("me", "pass", "123456")],
 )
 def test_authentication_validation_exceptions(username, password, token):
     with pytest.raises(Exception):
