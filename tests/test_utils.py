@@ -103,5 +103,5 @@ def test_download_file(tmp_path):
     text = "the response data"
     with requests_mock.Mocker() as m:
         m.get(url, text=text)
-        utils.download_file(url, p)
+        utils.download_file(url, str(p))
     assert p.read_text() == text
