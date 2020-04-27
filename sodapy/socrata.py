@@ -1,4 +1,4 @@
-    """
+"""
 Core module functionality
 """
 
