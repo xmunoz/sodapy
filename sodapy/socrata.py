@@ -78,7 +78,7 @@ class Socrata:
             self.session.auth = (username, password)
         elif access_token:
             self.session.headers.update(
-                {"Authorization": "OAuth {0}".format(access_token)}
+                {"Authorization": "OAuth {}".format(access_token)}
             )
 
         if session_adapter:
@@ -342,15 +342,15 @@ class Socrata:
             if has_assetid:
                 base = utils.format_old_api_request(dataid=dataset_identifier)
                 assetid = attachment["assetId"]
-                resource = "{0}/files/{1}?download=true&filename={2}".format(
+                resource = "{}/files/{}?download=true&filename={}".format(
                     base, assetid, attachment["filename"]
                 )
             else:
                 base = "/api/assets"
                 assetid = attachment["blobId"]
-                resource = "{0}/{1}?download=true".format(base, assetid)
+                resource = "{}/{}?download=true".format(base, assetid)
 
-            uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
+            uri = "{}{}{}".format(self.uri_prefix, self.domain, resource)
             utils.download_file(uri, file_path)
             files.append(file_path)
 
@@ -363,7 +363,7 @@ class Socrata:
         This method publishes it.
         """
         base = utils.format_old_api_request(dataid=dataset_identifier)
-        resource = "{0}/publication.{1}".format(base, content_type)
+        resource = "{}/publication.{}".format(base, content_type)
 
         return self._perform_request("post", resource)
 
@@ -512,7 +512,7 @@ class Socrata:
             )
         else:
             raise Exception(
-                "Unrecognized payload {0}. Currently only list-, dictionary-,"
+                "Unrecognized payload {}. Currently only list-, dictionary-,"
                 " and file-types are supported.".format(type(payload))
             )
 
@@ -544,10 +544,10 @@ class Socrata:
         if request_type not in request_type_methods:
             raise Exception(
                 "Unknown request type. Supported request types are"
-                ": {0}".format(", ".join(request_type_methods))
+                ": {}".format(", ".join(request_type_methods))
             )
 
-        uri = "{0}{1}{2}".format(self.uri_prefix, self.domain, resource)
+        uri = "{}{}{}".format(self.uri_prefix, self.domain, resource)
 
         # set a timeout, just to be safe
         kwargs["timeout"] = self.timeout
@@ -578,7 +578,7 @@ class Socrata:
             except ValueError:
                 return response.text
 
-        raise Exception("Unknown response format: {0}".format(content_type))
+        raise Exception("Unknown response format: {}".format(content_type))
 
     def close(self):
         """
