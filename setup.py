@@ -5,19 +5,19 @@ from setuptools import setup
 with open("sodapy/version.py") as f:
     exec(f.read())
 
-with open('README.md') as f:
+with open("README.md") as f:
     long_description = f.read()
 
-with open('requirements.txt') as requirements:
+with open("requirements.txt") as requirements:
     required = requirements.read().splitlines()
 
 kwargs = {
     "name": "sodapy",
-    "version": str(__version__),
+    "version": __version__,
     "packages": ["sodapy"],
     "description": "Python library for the Socrata Open Data API",
     "long_description": long_description,
-    "long_description_content_type": 'text/markdown',
+    "long_description_content_type": "text/markdown",
     "author": "Cristina Muñoz",
     "maintainer": "Cristina Muñoz",
     "author_email": "hi@xmunoz.com",
@@ -33,7 +33,7 @@ kwargs = {
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
         "Development Status :: 5 - Production/Stable",
-    ]
+    ],
 }
 
 setup(**kwargs)
