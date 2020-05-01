@@ -1,5 +1,6 @@
 from sodapy import Socrata
 from sodapy.constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
+
 import pytest
 import requests
 import requests_mock
@@ -7,6 +8,7 @@ import requests_mock
 import os.path
 import inspect
 import json
+import logging
 
 
 PREFIX = "https://"
@@ -19,11 +21,19 @@ TEST_DATA_PATH = os.path.join(
     os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))),
     "test_data",
 )
+LOGGER = logging.getLogger(__name__)
 
 
 def test_client():
     client = Socrata(DOMAIN, APPTOKEN)
     assert isinstance(client, Socrata)
+    client.close()
+
+
+def test_client_warning(caplog):
+    with caplog.at_level(logging.WARNING):
+        client = Socrata(DOMAIN, None)
+    assert "strict throttling limits" in caplog.text
     client.close()
 
 
@@ -48,6 +58,11 @@ def test_context_manager_exception_propagation():
     with pytest.raises(ZeroDivisionError):
         with Socrata(DOMAIN, APPTOKEN):
             1 / 0
+
+
+def test_client_oauth():
+    client = Socrata(DOMAIN, APPTOKEN, access_token="AAAAAAAAAAAA")
+    assert client.session.headers.get("Authorization") == "OAuth AAAAAAAAAAAA"
 
 
 def test_get():
