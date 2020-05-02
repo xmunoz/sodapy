@@ -3,6 +3,7 @@ Test the Socrata class.
 """
 
 import inspect
+import logging
 import json
 import os.path
 
