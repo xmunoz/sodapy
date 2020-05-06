@@ -26,7 +26,7 @@ def raise_for_status(response):
         except ValueError:
             more_info = None
         if more_info and more_info.lower() != response.reason.lower():
-            http_error_msg += ".\n\t{0}".format(more_info)
+            http_error_msg += ".\n\t{}".format(more_info)
         raise requests.exceptions.HTTPError(http_error_msg, response=response)
 
 
@@ -45,27 +45,25 @@ def format_old_api_request(dataid=None, content_type=None):
 
     if dataid is not None:
         if content_type is not None:
-            return "{0}/{1}.{2}".format(OLD_API_PATH, dataid, content_type)
-        else:
-            return "{0}/{1}".format(OLD_API_PATH, dataid)
-    else:
-        if content_type is not None:
-            return "{0}.{1}".format(OLD_API_PATH, content_type)
-        else:
-            raise Exception(
-                "This method requires at least a dataset_id or content_type."
-            )
+            return "{}/{}.{}".format(OLD_API_PATH, dataid, content_type)
+        return "{}/{}".format(OLD_API_PATH, dataid)
+
+    if content_type is not None:
+        return "{}.{}".format(OLD_API_PATH, content_type)
+
+    raise Exception(
+        "This method requires at least a dataset_id or content_type."
+    )
 
 
 def format_new_api_request(dataid=None, row_id=None, content_type=None):
     if dataid is not None:
         if content_type is not None:
             if row_id is not None:
-                return "{0}{1}/{2}.{3}".format(
+                return "{}{}/{}.{}".format(
                     DEFAULT_API_PATH, dataid, row_id, content_type
                 )
-            else:
-                return "{0}{1}.{2}".format(DEFAULT_API_PATH, dataid, content_type)
+            return "{}{}.{}".format(DEFAULT_API_PATH, dataid, content_type)
 
     raise Exception("This method requires at least a dataset_id or content_type.")
 

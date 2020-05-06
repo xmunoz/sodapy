@@ -1,14 +1,13 @@
-from sodapy import Socrata
-from sodapy.constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
-
-import pytest
-import requests
-import requests_mock
-
-import os.path
 import inspect
 import json
 import logging
+import os.path
+import requests
+import requests_mock
+import pytest
+
+from sodapy import Socrata
+from sodapy.constants import DEFAULT_API_PATH, OLD_API_PATH, DATASETS_PATH
 
 
 PREFIX = "https://"
@@ -52,12 +51,6 @@ def test_context_manager_timeout_exception():
     with pytest.raises(TypeError):
         with Socrata(DOMAIN, APPTOKEN, timeout="fail"):
             pass
-
-
-def test_context_manager_exception_propagation():
-    with pytest.raises(ZeroDivisionError):
-        with Socrata(DOMAIN, APPTOKEN):
-            1 / 0
 
 
 def test_client_oauth():
@@ -282,7 +275,7 @@ def test_delete():
         session_adapter=mock_adapter,
     )
 
-    uri = "{0}{1}{2}/{3}.json".format(PREFIX, DOMAIN, OLD_API_PATH, DATASET_IDENTIFIER)
+    uri = "{}{}{}/{}.json".format(PREFIX, DOMAIN, OLD_API_PATH, DATASET_IDENTIFIER)
     adapter.register_uri("DELETE", uri, status_code=200)
     response = client.delete(DATASET_IDENTIFIER)
     assert response.status_code == 200
@@ -462,7 +455,7 @@ def setup_publish_mock(
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}{2}/{3}/publication.{4}".format(
+    uri = "{}{}{}/{}/publication.{}".format(
         PREFIX, DOMAIN, OLD_API_PATH, dataset_identifier, content_type
     )
 
@@ -492,7 +485,7 @@ def setup_import_non_data_file(
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}/api/imports2/?method=blob".format(PREFIX, DOMAIN)
+    uri = "{}{}/api/imports2/?method=blob".format(PREFIX, DOMAIN)
 
     headers = {"content-type": "application/json; charset=utf-8"}
 
@@ -520,8 +513,8 @@ def setup_replace_non_data_file(
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}{2}/{3}.{4}?method=replaceBlob&id={3}".format(
-        PREFIX, DOMAIN, OLD_API_PATH, dataset_identifier, "txt"
+    uri = "{}{}{}/{}.{}?method=replaceBlob&id={}".format(
+        PREFIX, DOMAIN, OLD_API_PATH, dataset_identifier, "txt", dataset_identifier,
     )
 
     headers = {"content-type": "text/plain; charset=utf-8"}
@@ -553,7 +546,7 @@ def setup_old_api_mock(
         except ValueError:
             body = None
 
-    uri = "{0}{1}{2}/{3}.{4}".format(
+    uri = "{}{}{}/{}.{}".format(
         PREFIX, DOMAIN, OLD_API_PATH, dataset_identifier, content_type
     )
 
@@ -574,11 +567,11 @@ def setup_datasets_mock(adapter, response, response_code, reason="OK", params={}
     with open(path, "r") as response_body:
         body = json.load(response_body)
 
-    uri = "{0}{1}{2}".format(PREFIX, DOMAIN, DATASETS_PATH)
+    uri = "{}{}{}".format(PREFIX, DOMAIN, DATASETS_PATH)
 
     if "offset" not in params:
         params["offset"] = 0
-        uri = "{0}?{1}".format(
+        uri = "{}?{}".format(
             uri, "&".join(["{}={}".format(k, v) for k, v in params.items()])
         )
 
@@ -604,9 +597,9 @@ def setup_mock(
         body = json.load(response_body)
 
     if dataset_identifier is None:  # for create endpoint
-        uri = "{0}{1}{2}.{3}".format(PREFIX, DOMAIN, OLD_API_PATH, "json")
+        uri = "{}{}{}.{}".format(PREFIX, DOMAIN, OLD_API_PATH, "json")
     else:  # most cases
-        uri = "{0}{1}{2}{3}.{4}".format(
+        uri = "{}{}{}{}.{}".format(
             PREFIX, DOMAIN, DEFAULT_API_PATH, dataset_identifier, content_type
         )
 

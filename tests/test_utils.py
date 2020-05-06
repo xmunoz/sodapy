@@ -1,7 +1,7 @@
-import sodapy.utils as utils
 import pytest
 import requests
 import requests_mock
+import sodapy.utils as utils
 
 
 @pytest.mark.parametrize(
@@ -98,10 +98,10 @@ def test_authentication_validation(username, password, token):
 
 
 def test_download_file(tmp_path):
-    p = tmp_path / "myfile.txt"
+    path = tmp_path / "myfile.txt"
     url = "http://fileserver.dev/file"
     text = "the response data"
-    with requests_mock.Mocker() as m:
-        m.get(url, text=text)
-        utils.download_file(url, str(p))
-    assert p.read_text() == text
+    with requests_mock.Mocker() as mock:
+        mock.get(url, text=text)
+        utils.download_file(url, str(path))
+    assert path.read_text() == text
