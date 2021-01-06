@@ -48,9 +48,15 @@ There are some [jupyter](https://jupyter.org/) notebooks in the [examples direct
 Import the library and set up a connection to get started.
 
     >>> from sodapy import Socrata
-    >>> client = Socrata("sandbox.demo.socrata.com", "FakeAppToken", username="fakeuser@somedomain.com", password="mypassword")
+    >>> client = Socrata(
+            "sandbox.demo.socrata.com",
+            "FakeAppToken",
+            username="fakeuser@somedomain.com",
+            password="mypassword",
+            timeout=10
+        )
 
-`username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be subjected to strict throttling limits. To create a bare-bones client:
+`username` and `password` are only required for creating or modifying data. An application token isn't strictly required (can be `None`), but queries executed from a client without an application token will be subjected to strict throttling limits. You may want to increase the `timeout` seconds when making large requests. To create a bare-bones client:
 
     >>> client = Socrata("sandbox.demo.socrata.com", None)
 
