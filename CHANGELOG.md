@@ -1,5 +1,10 @@
 sodapy changes by release
 ==========================
+
+## 2.2.0
+* Dependencies: Upgrade all package dependencies
+* Cleanup: Update README with info about package deprecation
+
 ## 2.1.0
 
 * Cleanup: Code formatting with black
